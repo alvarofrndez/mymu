@@ -8,7 +8,6 @@
     onMounted(async () => {
         const data = await $spotifyApi('me')
         user_s.user = data
-        console.log(user_s.user)
     })
 </script>
 
