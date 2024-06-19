@@ -7,7 +7,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const clientSecret = config.public.spotifyClientSecret
     const redirectUri = config.public.spotifyRedirectUri
 
-    const auth_url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=user-read-private user-read-email`
+    const auth_url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=user-read-private user-read-email user-follow-read playlist-read-private user-modify-playback-state user-read-playback-state user-read-currently-playing`
 
     let access_token = ''
 
@@ -24,6 +24,12 @@ export default defineNuxtPlugin((nuxtApp) => {
                 redirect_uri: redirectUri
             })
         })
+        
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Error al obtener el token: ${errorText}`)
+        }
+
         const data = await response.json()
         access_token = data.access_token
         return access_token
@@ -37,6 +43,12 @@ export default defineNuxtPlugin((nuxtApp) => {
             'Content-Type': 'application/json'
         }
         })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Error al hacer peticion: ${errorText}`)
+        }
+
         return response.json()
     }
 
@@ -51,8 +63,33 @@ export default defineNuxtPlugin((nuxtApp) => {
         return data
     }
 
+    const getUserPlaylists = async () => {
+        return apiCall('me/playlists')
+    }
+
+    const getPlaylist = async (playlist) => {
+        return apiCall(`playlists/${playlist}`)
+    }
+
+    const getFollowedArtists = async () => {
+        return apiCall('me/following?type=artist')
+    }
+
+    const getArtist = async (artist) => {
+        return apiCall(`artists/${artist}`)
+    }
+
+    // EXPORTS
     nuxtApp.provide('spotifyAuthUrl', auth_url)
     nuxtApp.provide('getSpotifyToken', getToken)
+
     nuxtApp.provide('spotifyApi', apiCall)
+
     nuxtApp.provide('searchSpotify', searchSpotify)
+
+    nuxtApp.provide('getUserPlaylists', getUserPlaylists)
+    nuxtApp.provide('getPlaylist', getPlaylist)
+
+    nuxtApp.provide('getFollowedArtists', getFollowedArtists)
+    nuxtApp.provide('getArtist', getArtist)
 })

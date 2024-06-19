@@ -1,6 +1,10 @@
 <script setup>
     const { $spotifyAuthUrl } = useNuxtApp()
 
+    definePageMeta({
+        layout: 'login'
+    })
+
     function login(){
         window.location.href = $spotifyAuthUrl
     }

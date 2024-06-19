@@ -7,8 +7,8 @@
 
 <template>
     <div>
-        <NuxtLink to="/">Inicio</NuxtLink>
-        <NuxtLink to="/login">Login</NuxtLink>
+        <NuxtLink to="/login" v-if="!user_s.user">Login</NuxtLink>
+        <NuxtLink to="/home" v-if="user_s.user">Inicio</NuxtLink>
         <NuxtLink to="/profile" v-if="user_s.user">Perfil</NuxtLink>
         <NuxtLink to="/playlists" v-if="user_s.user">Playlists</NuxtLink>
     </div>

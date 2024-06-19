@@ -1,6 +1,10 @@
 <script setup>
     import { useRouter, useRoute } from 'vue-router'
 
+    definePageMeta({
+        layout: 'callback'
+    })
+
     const router = useRouter()
     const route = useRoute()
     const { $getSpotifyToken } = useNuxtApp()

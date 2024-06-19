@@ -10,7 +10,6 @@
         if (query.value) {
             const data = await $searchSpotify(query.value, 'artist') // Puedes cambiar 'track' por 'album', 'artist', etc.
             console.log(data)
-            // results.value = data.tracks.items
         }
     }
 </script>
