@@ -15,5 +15,3 @@
         <button @click="login">Iniciar sesión con Spotify</button>
     </div>
 </template>
-  
-  

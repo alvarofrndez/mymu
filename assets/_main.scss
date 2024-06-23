@@ -1,0 +1,49 @@
+body{
+    margin: 0 auto;
+
+    #__nuxt{
+        // size
+        width: 100vw;
+        height: 100vh;
+
+        // display
+        @include flex();
+
+        // decoration
+        background-color: $h-c-white;
+
+        *{
+            // decoration
+            font-size: $h-f-text;
+            font-family: Arial;
+        }
+
+        h1, h2, h3, h4{
+            // margin
+            margin: 0;
+            padding: 0;
+        }
+
+        h1{
+            // decoration
+            font-size: $h-f-text-title;
+        }
+
+        h2{
+            // decoration
+            font-size: $h-f-text-subtitle;
+        }
+
+
+        h3{
+            // decoration
+            font-size: $h-f-text-big;
+        }
+
+
+        a{
+            // decoration
+            text-decoration: none;
+        }
+    }
+}

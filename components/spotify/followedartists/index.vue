@@ -13,7 +13,7 @@
     <section>
         <h2>Mis Artistas</h2>
         <ul v-if="followed_artists.artists.items[0]">
-            <Followedartist v-for="artist in followed_artists.artists.items" :key="artist.id" :followed_artist="artist"/>
+            <Spotify-followedartists-detail v-for="artist in followed_artists.artists.items" :key="artist.id" :followed_artist="artist"/>
         </ul>
         <h3 v-else>No sigues artistas</h3>
     </section>

@@ -1,11 +1,11 @@
 <script setup>
   definePageMeta({
-    middleware: [
-      'auth'
+    layout: [
+      'main'
     ]
   })
 </script>
 
 <template>
-  
+  <Selector />
 </template>

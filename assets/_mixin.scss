@@ -1,0 +1,67 @@
+@mixin flex($direcction: row , $aling: center, $justify: center, $gap: 0, $wrap: nowrap){
+    display: flex;
+    flex-direction: $direcction;
+    align-items: $aling;
+    justify-content: $justify;
+    gap: $gap;
+    flex-wrap: $wrap;
+}
+
+@mixin grid($rows, $columns, $gap: 0, $rows_size: 1fr, $columns_size: 1fr){
+    display: grid;
+    grid-template-columns: repeat($columns, $columns_size);
+    grid-template-rows: repeat($rows, $rows_size);
+    gap: $gap;
+}
+
+@mixin simpleGrid($aling: center, $justify: center){
+    display: grid;
+    align-content: $aling;
+    justify-content: $justify;
+}
+
+@mixin loader-spiner(){
+    // size
+    width: 30px;
+    height: 30px;
+
+    // decoration
+    border: 3px solid transparent;
+    border-top: 3px solid $h-c-black;
+    border-radius: 50%;
+
+    // animation
+    animation: spin 1s ease-in-out infinite;
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+}
+
+@mixin backgroundSelector(){
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(-45deg, 
+    $h-c-spotify-primary-07,
+    $h-c-amazon-primary-07,
+    $h-c-soundcloud-primary-07,
+    $h-c-youtube-primary-07,
+    $h-c-apple-primary-07
+    );
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+}

@@ -38,8 +38,8 @@
 <template>
   <div>
     <template v-if="playlists && followed_artists">
-      <Playlists :playlists="playlists" />
-      <Followedartists :followed_artists="followed_artists" />
+      <Spotify-playlists :playlists="playlists" />
+      <Spotify-Followedartists :followed_artists="followed_artists" />
     </template>
     <template v-else>
       <p>Cargando...</p>
