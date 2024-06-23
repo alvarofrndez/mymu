@@ -5,9 +5,7 @@ dotenv.config()
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: [
-    '@pinia/nuxt',
-  ],
+  modules: ['@pinia/nuxt', "@nuxt/icon"],
   pinia: {
     storesDirs: ['./stores/**', './custom-folder/stores/**'],
   },
