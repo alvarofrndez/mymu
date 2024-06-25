@@ -40,11 +40,15 @@
             height: 100%;
 
             // position
-            position: relative;
+            position: fixed;
 
             // display
             @include flex(column, center, space-evenly);
 
+            // decoration
+            background-color: $h-c-black-opacity;
+
+            // transition
             transition: width .5s;
         }
 
@@ -54,7 +58,7 @@
             height: 1%;
             
             // position
-            position: absolute;
+            position: fixed;
             top: 1%;
             left: 1%;
             z-index: 100;
@@ -75,17 +79,18 @@
             z-index: 10;
 
             // display
-            @include flex();
+            @include flex(row, flex-start, center);
 
             // decoration
             border-top-left-radius: 20px;
             border-bottom-left-radius: 20px;
             background-color: $h-c-white;
-
+            overflow-y: scroll;
         }
 
         .section-container-open{
             animation: changewidhtopen .5s;
+            margin-left: 15%;
 
             @keyframes changewidhtopen {
                 0%{

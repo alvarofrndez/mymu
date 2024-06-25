@@ -36,7 +36,7 @@
 </script>
 
 <template>
-  <div>
+  <div class='container'>
     <template v-if="playlists && followed_artists">
       <Spotify-playlists :playlists="playlists" />
       <Spotify-Followedartists :followed_artists="followed_artists" />
@@ -47,5 +47,19 @@
   </div>
 </template>
   
+<style scoped lang='scss'>
+  @import '@/assets/style.scss';
 
-  
+  .container{
+    border: 1px solid black;
+    // size
+    width: 90%;
+
+    // decoration
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+
+    @include flex(column, flex-start, center, 2rem);
+  }
+
+</style>
