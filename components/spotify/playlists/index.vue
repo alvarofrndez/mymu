@@ -117,7 +117,7 @@
 
     .container-playlists{
         // size
-        width: 100%;
+        width: 95%;
 
         // display
         @include flex(column, flex-start, flex-start, 3rem);

@@ -51,15 +51,13 @@
   @import '@/assets/style.scss';
 
   .container{
-    border: 1px solid black;
-    // size
-    width: 90%;
+    @include displayContainerSpotify();
+
+    // display
+    @include flex(column, center, flex-start, 6rem);
 
     // decoration
-    margin-top: 2.5%;
-    margin-bottom: 2.5%;
-
-    @include flex(column, flex-start, center, 2rem);
+    // background-color: $h-c-white-opacity;
   }
 
 </style>
