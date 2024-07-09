@@ -7,12 +7,30 @@
 
     const { $getPlaylist } = useNuxtApp()
     const playlist = ref(null)
+    let container = null
+    let is_loading = false
 
     onMounted(async () => {
+        setInfiniteScroll()
+
         playlist.value = await $getPlaylist(route.params.id)
-        console.log(playlist.value.tracks.items[0])
         getTotalTime()
     })
+
+    function setInfiniteScroll(){
+        container = document.getElementsByClassName('section-container-open')[0] ? document.getElementsByClassName('section-container-open')[0] : document.getElementsByClassName('section-container-close')[0]
+        
+        container.addEventListener('scroll', () => {
+            if ((container.scrollTop + container.clientHeight) >= container.scrollHeight - 100) {
+                if (is_loading)
+                    return
+                
+                is_loading = true
+
+                getMoreTracks()
+            }
+        });
+    }
 
     function getTotalTime(){
         playlist.value.tracks.items.map((song) => {
@@ -20,17 +38,46 @@
         })
     }
 
-    function convertTime(){
-        let segundosTotales = Math.floor(playlist.value.total_time / 1000);
-        let horas = Math.floor(segundosTotales / 3600);
-        let minutos = Math.floor((segundosTotales % 3600) / 60);
-        let segundos = segundosTotales % 3600 % 60;
+    function convertTime(type, duration = 0){
+        if (type == 'playlist'){
+            let segundosTotales = Math.floor(playlist.value.total_time / 1000);
+            let horas = Math.floor(segundosTotales / 3600);
+            let minutos = Math.floor((segundosTotales % 3600) / 60);
+            let segundos = segundosTotales % 3600 % 60;
 
-        if(horas == 1)
-            return `Duración: ${horas} hora, ${minutos} minutos, ${segundos} segundos`
-        else{
-            return `Duración: ${horas} horas, ${minutos} minutos, ${segundos} segundos`
+            if(horas == 1)
+                return `Duración: ${horas} hora, ${minutos} minutos, ${segundos} segundos`
+            else{
+                return `Duración: ${horas} horas, ${minutos} minutos, ${segundos} segundos`
+            }
+        }else if (type == 'song'){
+            let segundosTotales = Math.floor(duration / 1000);
+            let minutos = Math.floor((segundosTotales % 3600) / 60);
+            let segundos = segundosTotales % 3600 % 60;
+
+            if(minutos == 1)
+                return `${minutos} minuto, ${segundos} segundos`
+            else{
+                return `${minutos} minutos, ${segundos} segundos`
+            }
         }
+    }
+
+    function convertDate(unconvert_date){
+        const date = new Date(unconvert_date)
+
+        const year = date.getFullYear()
+        const month = (date.getMonth() + 1).toString().padStart(2, '0')
+        const day = date.getDate().toString().padStart(2, '0')
+
+        return `${day}-${month}-${year}`
+    }
+    
+    async function getMoreTracks(){
+        const { $spotifyApi } = useNuxtApp()
+        // let new_tracks = await $spotifyApi(playlist.value.tracks.next)
+        // console.log(new_tracks)
+        // is_loading = false
     }
 </script>
 
@@ -48,27 +95,28 @@
                     <p v-if='playlist.public'>pública</p>
                     <p v-else>privada</p>
                     <p>{{ playlist.tracks.total }} canciones</p>
-                    <p v-if='playlist.total_time'>{{ convertTime() }}</p>
+                    <p v-if='playlist.total_time'>{{ convertTime('playlist') }}</p>
                 </div>
             </div>
         
             <ul class='contianer-songs'>
-                <div class='song'>
-                    <span>nombre</span>
-                    <span>añadida el</span>
-                    <span>añadida por</span>
-                    <span>album</span>
-                    <span>duracion</span>
+                <div class='song-header'>
+                    <b>nombre</b>
+                    <b>añadida el</b>
+                    <b>añadida por</b>
+                    <b>album</b>
+                    <b>duracion</b>
                 </div>
                 <li class='song' v-for="track of playlist.tracks.items">
                     <div class='song-name'>
-                        <span>{{ track.track.name }}</span>
-                        <span>{{ track.track.artists[0].name}}</span>
+                        <b>{{ track.track.name }}</b>
+                        <span class='gray'>{{ track.track.artists[0].name}}</span>
                     </div>
-                    <span>{{ track.added_at }}</span>
+                    <span>{{ convertDate(track.added_at) }}</span>
                     <span>{{ track.added_by.id}}</span>
                     <span v-if="track.track.album.album_type == 'album'">{{ track.track.album.name}}</span>
-                    <span >{{ track.track.duration_ms}}</span>
+                    <i v-else class='gray'>sin album</i>
+                    <span >{{ convertTime('song', track.track.duration_ms) }}</span>
                     <audio controls>
                         <source :src="track.track.preview_url">
                         Tu navegador no soporta el audio
@@ -90,6 +138,9 @@
 
         .playlist{
             // size
+            width: 80%;
+
+            // display
             @include flex(column, flex-start, flex-start, 2rem);
 
             &-info{
@@ -130,21 +181,49 @@
 
                 // margin
                 margin: 0;
-                padding: 2rem;
+                padding-top: 2rem;
+                padding-bottom: 2rem;
 
                 // decoration
                 list-style: none;
                 background-color: $h-c-white-opacity;
-                transform: translateX(-2rem);
                 border-radius: 15px;
 
-                .song{
+                .song-header{
+                    // size
+                    width: 100%;
+
                     // display
-                    @include flex(row, center, flex-start, 2.5rem);
+                    @include flex(row, center, flex-start);
+
+                    *{
+                        // size
+                        width: calc(100% / 6);
+
+                        // decoration
+                        font-size: $h-f-text-medium !important;
+                    }
+                }
+
+                .song{
+                    // size
+                    width: 100%;
+
+                    // display
+                    @include flex(row, center, flex-start);
+
+                    &>*{
+                        // size
+                        width: calc(100% / 6);
+                    }
 
                     .song-name{
                         // display
                         @include flex(column, flex-start, flex-start);
+                    }
+
+                    .gray{
+                        color: $h-c-black-gray;
                     }
                 }
             }
