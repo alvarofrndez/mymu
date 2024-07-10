@@ -106,6 +106,7 @@
                     <b>añadida por</b>
                     <b>album</b>
                     <b>duracion</b>
+                    <b>play</b>
                 </div>
                 <li class='song' v-for="track of playlist.tracks.items">
                     <div class='song-name'>
@@ -177,7 +178,7 @@
                 width: 100%;
 
                 // display
-                @include flex(column, flex-start, flex-start, 1.5rem);
+                @include flex(column, space-around, space-around, 1.5rem);
 
                 // margin
                 margin: 0;
@@ -191,10 +192,13 @@
 
                 .song-header{
                     // size
-                    width: 100%;
+                    width: calc(100% - 2rem);
 
                     // display
                     @include flex(row, center, flex-start);
+
+                    // margin
+                    padding: .5rem;
 
                     *{
                         // size
@@ -207,10 +211,16 @@
 
                 .song{
                     // size
-                    width: 100%;
+                    width: calc(100% - 2rem);
 
                     // display
                     @include flex(row, center, flex-start);
+
+                    // margin
+                    padding: .5rem;
+
+                    // decoration
+                    border-radius: 10px;
 
                     &>*{
                         // size
@@ -224,6 +234,10 @@
 
                     .gray{
                         color: $h-c-black-gray;
+                    }
+
+                    &:hover{
+                        background-color: $h-c-white;
                     }
                 }
             }

@@ -52,7 +52,7 @@
             // position
             position: relative;
             bottom: .5rem;
-            z-index: 1000;
+            z-index: 100;
             align-self: center;
 
             // display
