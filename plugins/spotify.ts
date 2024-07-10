@@ -52,6 +52,23 @@ export default defineNuxtPlugin((nuxtApp) => {
         return response.json()
     }
 
+    const apiCallFullUrl = async (endpoint: string, options = {}) => {
+        const response = await fetch(endpoint, {
+        ...options,
+        headers: {
+            'Authorization': `Bearer ${access_token}`,
+            'Content-Type': 'application/json'
+        }
+        })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Error al hacer peticion: ${errorText}`)
+        }
+
+        return response.json()
+    }
+
     const searchSpotify = async (query: string, type: string) => {
         const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${type}`, {
             headers: {
@@ -84,6 +101,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.provide('getSpotifyToken', getToken)
 
     nuxtApp.provide('spotifyApi', apiCall)
+    nuxtApp.provide('spotifyApiFullUrl', apiCallFullUrl)
 
     nuxtApp.provide('searchSpotify', searchSpotify)
 

@@ -5,7 +5,7 @@
 
     const route = useRoute()
 
-    const { $getArtist } = useNuxtApp()
+    const { $getArtist, $spotifyApi, $spotifyApiFullUrl } = useNuxtApp()
     const artist = ref(null)
     let container = null
     let is_loading = false
@@ -14,8 +14,30 @@
         // setInfiniteScroll()
 
         artist.value = await $getArtist(route.params.id)
-        console.log(artist.value)
+        let finish = await getArtistAlbums('first')
+
+        if(finish){
+            console.log(artist.value.albums)
+        }
     })
+
+    async function getArtistAlbums(type, next = null){
+        if(type = 'first'){
+            artist.value.albums = await $spotifyApi(`artists/${artist.value.id}/albums`)
+            next = artist.value.albums.next
+        }
+        console.log(next)
+        
+        if(next){
+            return await $spotifyApiFullUrl(artist.value.albums.next).then(async (new_albums) => {
+                artist.value.albums.items = [...artist.value.albums.items, ...new_albums.items]
+
+                return await getArtistAlbums('full', new_albums.next)
+            })
+        }else{
+            return true
+        }
+    }
 
     function setInfiniteScroll(){
         container = document.getElementsByClassName('section-container-open')[0] ? document.getElementsByClassName('section-container-open')[0] : document.getElementsByClassName('section-container-close')[0]
