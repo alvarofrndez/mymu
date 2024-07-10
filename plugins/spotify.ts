@@ -67,7 +67,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return apiCall('me/playlists')
     }
 
-    const getPlaylist = async (playlist) => {
+    const getPlaylist = async (playlist: any) => {
         return apiCall(`playlists/${playlist}`)
     }
 
@@ -75,7 +75,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return apiCall('me/following?type=artist')
     }
 
-    const getArtist = async (artist) => {
+    const getArtist = async (artist: any) => {
         return apiCall(`artists/${artist}`)
     }
 

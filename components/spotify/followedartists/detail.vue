@@ -1,6 +1,8 @@
 <script setup>
-    import { defineProps } from 'vue';
+    import { defineProps } from 'vue'
+    import { useRouter } from 'vue-router'
 
+    const router = useRouter()
     const {followed_artist} = defineProps({
         followed_artist: {
             type: Object,
@@ -8,11 +10,13 @@
         }
     })
 
-    console.log(followed_artist)
+    function viewArtist(){
+        router.push({ name: 'spotify-artist-id', params: { id : followed_artist.id } });
+    }
 </script>
 
 <template>
-    <article class='container-followed-artist' v-if="followed_artist">
+    <article class='container-followed-artist' v-if="followed_artist" @click="viewArtist">
         <div class='container-image'>
             <img v-if="followed_artist.images[0]" :src='followed_artist.images[0].url' :alt='followed_artist.name'>
         </div>
