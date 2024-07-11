@@ -7,159 +7,119 @@
 
     const { $getArtist, $spotifyApi, $spotifyApiFullUrl } = useNuxtApp()
     const artist = ref(null)
-    let container = null
-    let is_loading = false
+    const data_charged = ref(false)
 
     onMounted(async () => {
-        // setInfiniteScroll()
-
         artist.value = await $getArtist(route.params.id)
-        let finish = await getArtistAlbums('first')
-
-        if(finish){
-            console.log(artist.value.albums)
-        }
+        await getArtistAlbums().then((answer) => {
+            data_charged.value = true
+        })
     })
 
-    async function getArtistAlbums(type, next = null){
-        if(type = 'first'){
-            artist.value.albums = await $spotifyApi(`artists/${artist.value.id}/albums`)
-            next = artist.value.albums.next
-        }
-        console.log(next)
-        
-        if(next){
-            return await $spotifyApiFullUrl(artist.value.albums.next).then(async (new_albums) => {
-                artist.value.albums.items = [...artist.value.albums.items, ...new_albums.items]
-
-                return await getArtistAlbums('full', new_albums.next)
-            })
-        }else{
-            return true
-        }
-    }
-
-    function setInfiniteScroll(){
-        container = document.getElementsByClassName('section-container-open')[0] ? document.getElementsByClassName('section-container-open')[0] : document.getElementsByClassName('section-container-close')[0]
-        
-        container.addEventListener('scroll', () => {
-            if ((container.scrollTop + container.clientHeight) >= container.scrollHeight - 100) {
-                if (is_loading)
-                    return
-                
-                is_loading = true
-
-                getMoreTracks()
-            }
-        });
-    }
-
-    function getTotalTime(){
-        playlist.value.tracks.items.map((song) => {
-            playlist.value.total_time ? playlist.value.total_time += song.track.duration_ms : playlist.value.total_time = song.track.duration_ms
+    async function getArtistAlbums(){
+        await $spotifyApi(`artists/${artist.value.id}/albums`).then( async (data) => {
+            artist.value.albums = data
+            
+            if(artist.value.albums.next)
+                return await getMoreAlbums(artist.value.albums.next)
         })
     }
 
-    function convertTime(type, duration = 0){
-        if (type == 'playlist'){
-            let segundosTotales = Math.floor(playlist.value.total_time / 1000);
-            let horas = Math.floor(segundosTotales / 3600);
-            let minutos = Math.floor((segundosTotales % 3600) / 60);
-            let segundos = segundosTotales % 3600 % 60;
-
-            if(horas == 1)
-                return `Duración: ${horas} hora, ${minutos} minutos, ${segundos} segundos`
-            else{
-                return `Duración: ${horas} horas, ${minutos} minutos, ${segundos} segundos`
-            }
-        }else if (type == 'song'){
-            let segundosTotales = Math.floor(duration / 1000);
-            let minutos = Math.floor((segundosTotales % 3600) / 60);
-            let segundos = segundosTotales % 3600 % 60;
-
-            if(minutos == 1)
-                return `${minutos} minuto, ${segundos} segundos`
-            else{
-                return `${minutos} minutos, ${segundos} segundos`
-            }
-        }
+    async function getMoreAlbums(url){
+        $spotifyApiFullUrl(url).then(async (new_albums) => {
+            artist.value.albums.items = [...artist.value.albums.items, ...new_albums.items]
+            artist.value.albums.next = new_albums.next
+            if(new_albums.next)
+                return await getMoreAlbums(new_albums.next)
+            else
+                return true
+        })
     }
 
-    function convertDate(unconvert_date){
-        const date = new Date(unconvert_date)
+    function findAlbums(albums){
+        let result = albums.find((album) => album.album_type == 'album')
 
-        const year = date.getFullYear()
-        const month = (date.getMonth() + 1).toString().padStart(2, '0')
-        const day = date.getDate().toString().padStart(2, '0')
-
-        return `${day}-${month}-${year}`
+        console.log(result)
+        return result
     }
-    
-    async function getMoreTracks(){
-        const { $spotifyApi } = useNuxtApp()
-        // let new_tracks = await $spotifyApi(playlist.value.tracks.next)
-        // console.log(new_tracks)
-        // is_loading = false
+
+    function findSingles(singles){
+        let result = singles.find((single) => single.album_type == 'single')
+
+        console.log(result)
+        return result
+    }
+
+    function findCompilations(compilations){
+        let result = compilations.find((compilation) => compilation.album_type == 'compilation')
+
+        console.log(result)
+        return result
     }
 </script>
 
 <template>
-    <section class='contianer-playlist'>
-        <!-- <article class='playlist' v-if="playlist">
-            <div class='playlist-info'>
-                <div class='container-img' v-if="playlist.images && playlist.images[0]">
-                    <img :src="playlist.images[0].url" :alt="playlist.name">
+    <section class='contianer-artist' v-if='data_charged'>
+        <!-- 
+            artist.followers.total
+            artist.name
+            artist.images[0].url
+            v-for artist.genres
+            find artist.albums.items where album_type == album
+            find artist.albums.items where album_type == single
+        -->
+        <article class='artist' v-if="artist">
+            <div class='artist-info'>
+                <div class='container-img' v-if="artist.images && artist.images[0]">
+                    <img :src="artist.images[0].url" :alt="artist.name">
                 </div>
 
                 <div class='data'>
-                    <h1>{{ playlist.name }}</h1>
-                    <p>{{ playlist.followers.total }} seguidores</p>
-                    <p v-if='playlist.public'>pública</p>
-                    <p v-else>privada</p>
-                    <p>{{ playlist.tracks.total }} canciones</p>
-                    <p v-if='playlist.total_time'>{{ convertTime('playlist') }}</p>
+                    <h1>{{ artist.name }}</h1>
+                    <p>{{ artist.followers.total }} seguidores</p>
+                    <div>
+                        <p v-for='genre of artist.genres' :key='genre'>{{ genre }}</p>
+                    </div>
+                    
                 </div>
             </div>
         
-            <ul class='contianer-songs'>
-                <div class='song-header'>
-                    <b>nombre</b>
-                    <b>añadida el</b>
-                    <b>añadida por</b>
-                    <b>album</b>
-                    <b>duracion</b>
-                    <b>play</b>
-                </div>
-                <li class='song' v-for="track of playlist.tracks.items">
-                    <div class='song-name'>
-                        <b>{{ track.track.name }}</b>
-                        <span class='gray'>{{ track.track.artists[0].name}}</span>
-                    </div>
-                    <span>{{ convertDate(track.added_at) }}</span>
-                    <span>{{ track.added_by.id}}</span>
-                    <span v-if="track.track.album.album_type == 'album'">{{ track.track.album.name}}</span>
-                    <i v-else class='gray'>sin album</i>
-                    <span >{{ convertTime('song', track.track.duration_ms) }}</span>
-                    <audio controls>
-                        <source :src="track.track.preview_url">
-                        Tu navegador no soporta el audio
-                    </audio>
+            <ul class='contianer-albums'>
+                <h2>Albums</h2>
+                <li class='album' v-for="album of findAlbums(artist.albums.items)" :key='album.id' >
+                    {{ album.name }}
+                    {{ album.album_type }}
                 </li>
             </ul>
-        </article> -->
+            <ul class='contianer-singles'>
+                <h2>Singles</h2>
+                <li class='single' v-for="single of findSingles(artist.albums.items)" :key='single.id' >
+                    {{ single.name }}
+                </li>
+            </ul>
+            <ul class='contianer-compilations'>
+                <h2>Compilations</h2>
+                <li class='compilation' v-for="compilation of findCompilations(artist.albums.items)" :key='compilation.id'>
+                    {{ compilation.name }}
+                </li>
+            </ul>
+        </article>
+    </section>
+    <section v-else>
+        cargando...
     </section>
 </template>
 
 <style scoped lang='scss'>
     @import '@/assets/style.scss';
 
-    .contianer-playlist{
+    .contianer-artist{
         @include displayContainerSpotify();
 
         // display
         @include flex();
 
-        .playlist{
+        .artist{
             // size
             width: 80%;
 
@@ -195,7 +155,7 @@
                 }
             }
 
-            .contianer-songs{
+            .contianer-albums, .contianer-singles, .contianer-compilations{
                 // size
                 width: 100%;
 
@@ -211,57 +171,6 @@
                 list-style: none;
                 background-color: $h-c-white-opacity;
                 border-radius: 15px;
-
-                .song-header{
-                    // size
-                    width: calc(100% - 2rem);
-
-                    // display
-                    @include flex(row, center, flex-start);
-
-                    // margin
-                    padding: .5rem;
-
-                    *{
-                        // size
-                        width: calc(100% / 6);
-
-                        // decoration
-                        font-size: $h-f-text-medium !important;
-                    }
-                }
-
-                .song{
-                    // size
-                    width: calc(100% - 2rem);
-
-                    // display
-                    @include flex(row, center, flex-start);
-
-                    // margin
-                    padding: .5rem;
-
-                    // decoration
-                    border-radius: 10px;
-
-                    &>*{
-                        // size
-                        width: calc(100% / 6);
-                    }
-
-                    .song-name{
-                        // display
-                        @include flex(column, flex-start, flex-start);
-                    }
-
-                    .gray{
-                        color: $h-c-black-gray;
-                    }
-
-                    &:hover{
-                        background-color: $h-c-white;
-                    }
-                }
             }
         }
     }
