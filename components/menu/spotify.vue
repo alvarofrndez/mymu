@@ -56,12 +56,14 @@
             </div>
             <section>
                 <h3>Artistas</h3>
-                <div class='categories'></div>
+                <div class='categories'>
+                    <NuxtLink to='/spotify/artists' v-if='user_s.user'>buscar</NuxtLink>
+                </div>
             </section>
             <section>
                 <h3>Playlists</h3>
                 <div class='categories'>
-                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
+                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>buscar</NuxtLink>
                     <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
                     <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
                     <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
@@ -69,7 +71,9 @@
             </section>
             <section>
                 <h3>Canciones</h3>
-                <div class='categories'></div>
+                <div class='categories'>
+                    <NuxtLink to='/spotify/tracks' v-if='user_s.user'>buscar</NuxtLink>
+                </div>
             </section>
             <section>
                 <h3>Buscador</h3>

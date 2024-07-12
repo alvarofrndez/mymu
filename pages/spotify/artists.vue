@@ -11,13 +11,13 @@
     const search = async () => {
       results.value = []
       if (query.value) {
-        const result = await $searchSpotify(query.value, 'album')
+        const result = await $searchSpotify(query.value, 'artist')
         results.value = result
       }
     }
 
-    function goTo(album) {
-      router.push(`/spotify/artist/${album.id}` )
+    function goTo(artist) {
+      router.push(`/spotify/artist/${artist.id}` )
     }
 </script>
 
@@ -25,10 +25,10 @@
     <div>
       <input v-model="query" placeholder="Buscar en Spotify" @keyup="search" />
   
-      <div v-if="results.albums">
+      <div v-if="results.artists">
         <h3>Resultados:</h3>
         <ul>
-          <li v-for="album in results.albums.items" :key="album.id" @click="() => goTo(album)">{{ album.name }}</li>
+          <li v-for="artist in results.artists.items" :key="artist.id" @click="() => goTo(artist)">{{ artist.name }}</li>
         </ul>
       </div>
     </div>
