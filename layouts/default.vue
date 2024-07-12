@@ -80,7 +80,6 @@
 
             // display
             @include flex(row, flex-start, center);
-            
 
             // decoration
             border-top-left-radius: 20px;

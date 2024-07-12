@@ -8,10 +8,24 @@
     const { $getArtist, $spotifyApi, $spotifyApiFullUrl } = useNuxtApp()
     const artist = ref(null)
     const data_charged = ref(false)
+    const albums_types = [
+        {
+            title: 'Albums',
+            type: 'album'
+        },
+        {
+            title: 'Singles',
+            type: 'single'
+        },
+        {
+            title: 'Compilations',
+            type: 'compilation'
+        }
+    ]
 
     onMounted(async () => {
         artist.value = await $getArtist(route.params.id)
-        await getArtistAlbums().then((answer) => {
+        await getArtistAlbums().then(() => {
             data_charged.value = true
         })
     })
@@ -29,6 +43,7 @@
         $spotifyApiFullUrl(url).then(async (new_albums) => {
             artist.value.albums.items = [...artist.value.albums.items, ...new_albums.items]
             artist.value.albums.next = new_albums.next
+
             if(new_albums.next)
                 return await getMoreAlbums(new_albums.next)
             else
@@ -36,38 +51,22 @@
         })
     }
 
-    function findAlbums(albums){
-        let result = albums.find((album) => album.album_type == 'album')
+    function filterAlbum(albums, type){
+        let result = []
+
+        albums.map((album) => {
+            if(album.album_type == type)
+                result.push(album)
+        })
 
         console.log(result)
-        return result
-    }
 
-    function findSingles(singles){
-        let result = singles.find((single) => single.album_type == 'single')
-
-        console.log(result)
-        return result
-    }
-
-    function findCompilations(compilations){
-        let result = compilations.find((compilation) => compilation.album_type == 'compilation')
-
-        console.log(result)
         return result
     }
 </script>
 
 <template>
     <section class='contianer-artist' v-if='data_charged'>
-        <!-- 
-            artist.followers.total
-            artist.name
-            artist.images[0].url
-            v-for artist.genres
-            find artist.albums.items where album_type == album
-            find artist.albums.items where album_type == single
-        -->
         <article class='artist' v-if="artist">
             <div class='artist-info'>
                 <div class='container-img' v-if="artist.images && artist.images[0]">
@@ -83,24 +82,20 @@
                     
                 </div>
             </div>
-        
-            <ul class='contianer-albums'>
-                <h2>Albums</h2>
-                <li class='album' v-for="album of findAlbums(artist.albums.items)" :key='album.id' >
-                    {{ album.name }}
-                    {{ album.album_type }}
-                </li>
-            </ul>
-            <ul class='contianer-singles'>
-                <h2>Singles</h2>
-                <li class='single' v-for="single of findSingles(artist.albums.items)" :key='single.id' >
-                    {{ single.name }}
-                </li>
-            </ul>
-            <ul class='contianer-compilations'>
-                <h2>Compilations</h2>
-                <li class='compilation' v-for="compilation of findCompilations(artist.albums.items)" :key='compilation.id'>
-                    {{ compilation.name }}
+
+            <ul v-for="album_type of albums_types" :key="album_type.type" :class="'contianer-' + album_type.type">
+                <h2>{{ album_type.title }}</h2>
+                <li class='album' v-for="album of filterAlbum(artist.albums.items, album_type.type)" :key='album.id' >
+                    <span>{{ album.name }}</span>
+                    <span>{{ album.release_date }}</span>
+                    <span v-if="album.album_type != 'single'">{{ album.release_date }}</span>
+                    <div class='container-artist' v-if="album.artists.length > 1">
+                        <span v-for="artist of album.artists">{{ artist.name }}</span>
+                    </div>
+                    <div class='container-img' v-if="album.images && album.images[0]">
+                        <img :src="album.images[0].url" alt="">
+                    </div>
+                    
                 </li>
             </ul>
         </article>
@@ -155,7 +150,7 @@
                 }
             }
 
-            .contianer-albums, .contianer-singles, .contianer-compilations{
+            .contianer-album, .contianer-single, .contianer-compilation{
                 // size
                 width: 100%;
 
