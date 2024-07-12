@@ -79,24 +79,30 @@
                     <div>
                         <p v-for='genre of artist.genres' :key='genre'>{{ genre }}</p>
                     </div>
-                    
                 </div>
             </div>
 
             <ul v-for="album_type of albums_types" :key="album_type.type" :class="'contianer-' + album_type.type">
                 <h2>{{ album_type.title }}</h2>
-                <li class='album' v-for="album of filterAlbum(artist.albums.items, album_type.type)" :key='album.id' >
-                    <span>{{ album.name }}</span>
-                    <span>{{ album.release_date }}</span>
-                    <span v-if="album.album_type != 'single'">{{ album.release_date }}</span>
-                    <div class='container-artist' v-if="album.artists.length > 1">
-                        <span v-for="artist of album.artists">{{ artist.name }}</span>
-                    </div>
-                    <div class='container-img' v-if="album.images && album.images[0]">
-                        <img :src="album.images[0].url" alt="">
-                    </div>
-                    
-                </li>
+                <div>
+                    <li class='album' v-for="album of filterAlbum(artist.albums.items, album_type.type)" :key='album.id' >
+                        <div class='container-img' v-if="album.images && album.images[1]">
+                            <img :src="album.images[1].url" :alt="album.name">
+                        </div>
+                        <b>{{ album.name }}</b>
+                        <div class='date'>
+                            <span>{{ album.release_date.slice(0, 4) }}</span>
+                            <span v-if="album.album_type != 'single'"> - </span>
+                            <span v-if="album.album_type != 'single'">{{ album.total_tracks }} canciones</span>
+                        </div>
+                        <div class='container-artist' v-if="album.artists.length > 1">
+                            <span v-for="artist of album.artists">
+                                {{ artist.name }}
+                                <span v-if="album.artists.length - 1 != album.artists.indexOf(artist)"> - </span>
+                            </span>
+                        </div>
+                    </li>
+                </div>
             </ul>
         </article>
     </section>
@@ -155,17 +161,64 @@
                 width: 100%;
 
                 // display
-                @include flex(column, space-around, space-around, 1.5rem);
+                @include flex(column, flex-start, flex-start, 2.5rem);
 
                 // margin
                 margin: 0;
-                padding-top: 2rem;
-                padding-bottom: 2rem;
+                padding: 2rem;
 
                 // decoration
                 list-style: none;
                 background-color: $h-c-white-opacity;
                 border-radius: 15px;
+
+                &>div{
+                    // display
+                    @include flex(row, flex-start, flex-start, 1.5rem);
+                    flex-wrap: wrap;
+
+                    li{
+                        // size
+                        max-width: 200px;
+
+                        // display
+                        @include flex(column, flex-start, flex-start, .5rem);
+
+                        // margin
+                        padding: 1rem;
+
+                        // decoration
+                        cursor: pointer;
+                        border-radius: 15px;
+
+                        .container-img{
+                            // size
+                            width: 200px;
+                            height: 200px;
+
+                            // display
+                            @include flex();
+
+                            // decoration
+                            overflow: hidden;
+                            border-radius: 10px;
+
+                            img{
+                                // size
+                                width: 100%;
+                                height: 100%;
+                            }
+                        }
+
+                        .date{
+                            @include flex(row, flex-start, flex-start, .5rem);
+                        }
+
+                        &:hover{
+                            background-color: $h-c-white;
+                        }
+                    }
+                }
             }
         }
     }
