@@ -24,7 +24,7 @@
 
     .container-followed-artists{
         // size
-        width: 95%;
+        width: 100%;
 
         @include flex(column, flex-start, flex-start, 3rem);
 

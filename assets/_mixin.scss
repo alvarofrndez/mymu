@@ -68,8 +68,11 @@
 
 @mixin displayContainerSpotify(){
     // size
-    width: 100%;
+    width: 95%;
     min-height: 94%;
+
+    // display
+    @include flex(column);
 
     // margin
     margin-top: 2rem;

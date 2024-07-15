@@ -117,7 +117,7 @@
 
     .container-playlists{
         // size
-        width: 95%;
+        width: 100%;
 
         // display
         @include flex(column, flex-start, flex-start, 3rem);
@@ -131,6 +131,8 @@
 
             // display
             @include flex(row, center, center, 5%);
+
+            margin: 1rem;
 
             // decoration
             overflow-x: hidden;
