@@ -5,31 +5,23 @@
 
     const route = useRoute()
 
-    const { $getPlaylist } = useNuxtApp()
-    const playlist = ref(null)
+    const { $getAlbum } = useNuxtApp()
+    const album = ref(null)
     let container = null
     let is_loading = false
     const data_charged = ref(false)
 
-    onMounted( () => {
+    onMounted(async () => {
         setInfiniteScroll()
-        getPlaylist()
-    })
-    
-    async function getPlaylist(){
-        await $getPlaylist(route.params.id).then((answer) => {
-            if(answer){
-                playlist.value = answer
-                console.log(playlist.value)
-                data_charged.value = true
-                getTotalTime()
-            }else{
-                getPlaylist()
-            }
-        })
-    }
 
-    // 7kuC4E4B2epV88wK0no6Mj
+        await $getAlbum(route.params.id).then((answer) => {
+            console.log(answer)
+            album.value = answer
+            data_charged.value = true
+            getTotalTime()
+        })
+    })
+
     function setInfiniteScroll(){
         container = document.getElementsByClassName('section-container-open')[0] ? document.getElementsByClassName('section-container-open')[0] : document.getElementsByClassName('section-container-close')[0]
         
@@ -46,14 +38,14 @@
     }
 
     function getTotalTime(){
-        playlist.value.tracks.items.map((song) => {
-            playlist.value.total_time ? playlist.value.total_time += song.track.duration_ms : playlist.value.total_time = song.track.duration_ms
+        album.value.tracks.items.map((song) => {
+            album.value.total_time ? album.value.total_time += song.duration_ms : album.value.total_time = song.duration_ms
         })
     }
 
     function convertTime(type, duration = 0){
-        if (type == 'playlist'){
-            let segundosTotales = Math.floor(playlist.value.total_time / 1000);
+        if (type == 'album'){
+            let segundosTotales = Math.floor(album.value.total_time / 1000);
             let horas = Math.floor(segundosTotales / 3600);
             let minutos = Math.floor((segundosTotales % 3600) / 60);
             let segundos = segundosTotales % 3600 % 60;
@@ -95,47 +87,41 @@
 </script>
 
 <template>
-    <section class='contianer-playlist' v-if="playlist">
-        <article class='playlist' >
-            <div class='playlist-info'>
-                <div class='container-img' v-if="playlist.images && playlist.images[0]">
-                    <img :src="playlist.images[0].url" :alt="playlist.name">
+    <section class='contianer-album' v-if="data_charged">
+        <article class='album' v-if="album">
+            <div class='album-info'>
+                <div class='container-img' v-if="album.images && album.images[0]">
+                    <img :src="album.images[0].url" :alt="album.name">
                 </div>
 
                 <div class='data'>
-                    <h1>{{ playlist.name }}</h1>
-                    <p>Creada por {{ playlist.owner.display_name }}</p>
-                    <p>{{ playlist.followers.total }} seguidores</p>
-                    <p v-if='playlist.public'>pública</p>
-                    <p v-else>privada</p>
-                    <p>{{ playlist.tracks.total }} canciones</p>
-                    <p v-if='playlist.total_time'>{{ convertTime('playlist') }}</p>
+                    <h1>{{ album.name }}</h1>
+                    <!-- <p>{{ album.followers.total }} seguidores</p> -->
+                    <!-- <p v-if='album.public'>pública</p> -->
+                    <!-- <p v-else>privada</p> -->
+                    <div>
+                        <span v-for="artist of album.artists">{{ artist.name }}</span>
+                    </div>
+                    <p>{{ album.tracks.total }} canciones</p>
+                    <p>{{ album.release_date.slice(0,4) }}</p>
+                    <p v-if='album.total_time'>{{ convertTime('album') }}</p>
                 </div>
             </div>
         
             <ul class='contianer-songs'>
-                <div class='song-header'>
-                    <b>nombre</b>
-                    <b>añadida el</b>
-                    <b>añadida por</b>
-                    <b>album</b>
-                    <b>duracion</b>
-                    <b>play</b>
-                </div>
-                <li class='song' v-for="track of playlist.tracks.items" v-if="track">
-                    <div class='song-name' >
-                        <b>{{ track.track.name }}</b>
-                        <span class='gray'>{{ track.track.artists[0].name}}</span>
+                <li class='song' v-for="track of album.tracks.items">
+                    <div class='song-name'>
+                        <b>{{ track.name }}</b>
+                        <span class='gray'>{{ track.artists[0].name}}</span>
                     </div>
-                    <span>{{ convertDate(track.added_at) }}</span>
-                    <span>{{ track.added_by.id ? track.added_by.id : 'spotify'}}</span>
-                    <span v-if="track.track.album.album_type == 'album'">{{ track.track.album.name}}</span>
+                    <!-- <span>{{ track.added_by.id}}</span>
+                    <span v-if="track.album.album_type == 'album'">{{ track.album.name}}</span>
                     <i v-else class='gray'>sin album</i>
-                    <span >{{ convertTime('song', track.track.duration_ms) }}</span>
+                    <span >{{ convertTime('song', track.duration_ms) }}</span>
                     <audio controls>
-                        <source :src="track.track.preview_url">
+                        <source :src="track.preview_url">
                         Tu navegador no soporta el audio
-                    </audio>
+                    </audio> -->
                 </li>
             </ul>
         </article>
@@ -146,13 +132,13 @@
 <style scoped lang='scss'>
     @import '@/assets/style.scss';
 
-    .contianer-playlist{
+    .contianer-album{
         @include displayContainerSpotify();
 
         // display
         @include flex();
 
-        .playlist{
+        .album{
             // size
             width: 80%;
 
@@ -229,7 +215,7 @@
                     width: calc(100% - 2rem);
 
                     // display
-                    @include flex(row, center, flex-start, 1.5rem);
+                    @include flex(row, center, flex-start);
 
                     // margin
                     padding: .5rem;
@@ -239,8 +225,7 @@
 
                     &>*{
                         // size
-                        width: calc(100% / 6 - 1.5rem);
-                        overflow: hidden;
+                        width: calc(100% / 6);
                     }
 
                     .song-name{

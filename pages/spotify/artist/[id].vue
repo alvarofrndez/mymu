@@ -106,9 +106,7 @@
             </ul>
         </article>
     </section>
-    <section v-else>
-        cargando...
-    </section>
+    <LoaderCircle v-else/>
 </template>
 
 <style scoped lang='scss'>

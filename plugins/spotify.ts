@@ -88,6 +88,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         return apiCall(`playlists/${playlist}`)
     }
 
+    const getUserAlbums = async () => {
+        return apiCall('me/albums')
+    }
+
+    const getAlbum = async (album: any) => {
+        return apiCall(`albums/${album}`)
+    }
+
     const getFollowedArtists = async () => {
         return apiCall('me/following?type=artist')
     }
@@ -107,6 +115,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     nuxtApp.provide('getUserPlaylists', getUserPlaylists)
     nuxtApp.provide('getPlaylist', getPlaylist)
+
+    nuxtApp.provide('getUserAlbums', getUserAlbums)
+    nuxtApp.provide('getAlbum', getAlbum)
 
     nuxtApp.provide('getFollowedArtists', getFollowedArtists)
     nuxtApp.provide('getArtist', getArtist)

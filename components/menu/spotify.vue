@@ -64,9 +64,6 @@
                 <h3>Playlists</h3>
                 <div class='categories'>
                     <NuxtLink to='/spotify/playlists' v-if='user_s.user'>buscar</NuxtLink>
-                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
-                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
-                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>Todas</NuxtLink>
                 </div>
             </section>
             <section>
@@ -76,8 +73,10 @@
                 </div>
             </section>
             <section>
-                <h3>Buscador</h3>
-                <div class='categories'></div>
+                <h3>Albums</h3>
+                <div class='categories'>
+                    <NuxtLink to='/spotify/albums' v-if='user_s.user'>buscar</NuxtLink>
+                </div>
             </section>
             <section>
                 <h3>Usuario</h3>

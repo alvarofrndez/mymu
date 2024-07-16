@@ -7,25 +7,24 @@
     
     const { $searchSpotify } = useNuxtApp()
     const router = useRouter() 
-    const hover_playlist = ref({})
+    const hover_album = ref({})
     
     const search = async () => {
       results.value = []
       if (query.value) {
-        const result = await $searchSpotify(query.value, 'playlist')
+        const result = await $searchSpotify(query.value, 'album')
         results.value = result
-        console.log(results.value)
       }else{
-        hover_playlist.value = {}
+        hover_album.value = {}
       }
     }
 
-    function goTo(playlist) {
-      router.push(`/spotify/playlist/${playlist.id}`)
+    function goTo(album) {
+      router.push(`/spotify/album/${album.id}`)
     }
 
-    function changeHoverPlaylist(playlist) {
-      hover_playlist.value = playlist
+    function changeHoverAlbum(album) {
+      hover_album.value = album
     }
 </script>
 
@@ -34,33 +33,38 @@
       <div class='container-results'>
         <input class='input-search' v-model="query" placeholder="Buscar en Spotify" @keyup="search" />
         
-        <article class='container-playlists' v-if="results.playlists">
+        <article class='container-albums' v-if="results.albums">
           <ul>
-            <li v-for="playlist in results.playlists.items" :key="playlist.id" @click="() => goTo(playlist)" @mouseenter="() => changeHoverPlaylist(playlist)">{{ playlist.name }}</li>
+            <li v-for="album in results.albums.items" :key="album.id" @click="() => goTo(album)" @mouseenter="() => changeHoverAlbum(album)">{{ album.name }}</li>
           </ul>
         </article>
 
         <article v-else>
-          <i>Escribe una playlist para obtener resultados</i>
+          <i>Escribe un album para obtener resultados</i>
         </article>
       </div>
       
-      <div class='container-hover-playlist'>
-        <article class='hover-playlist' v-if="hover_playlist.name" @click="() => goTo(hover_playlist)">
-          <div class='container-img' v-if="hover_playlist.images">
-            <img :src='hover_playlist.images[0].url' :alt='hover_playlist.name'>
+      <div class='container-hover-album'>
+        <article class='hover-album' v-if="hover_album.name" @click="() => goTo(hover_album)">
+          <div class='container-img' v-if="hover_album.images">
+            <img :src='hover_album.images[0].url' :alt='hover_album.name'>
           </div>
           
           <div class='container-data'>
-            <b>{{ hover_playlist.name }}</b>
-            <span>Creado por: {{ hover_playlist.owner.display_name }}</span>
+            <b>{{ hover_album.name }}</b>
+            <span>{{ hover_album.release_date }}</span>
           </div>
 
-          <span>{{ hover_playlist.tracks.total }} canciones</span>
+          <div class='container-artists'>
+            <span v-for="artist of hover_album.artists" :key="artist.name">
+              {{ artist.name }}
+              <span v-if="hover_album.artists.indexOf(artist) < hover_album.artists.length - 1"> · </span> 
+            </span>
+          </div>
         </article>
 
         <article v-else>
-          <i>Posicionate encima de una cancón para ver sus datos</i>
+          <i>Posicionate encima de un album para ver sus datos</i>
         </article>
       </div>
     </section>
@@ -72,7 +76,7 @@
   .container-search{
     @include layoutSearchSpotify();
 
-    .container-hover-playlist{
+    .container-hover-album{
       //size
       width: 50%;
 
@@ -80,7 +84,7 @@
       @include flex(column, center, flex-start);
       align-self: center;
 
-      .hover-playlist{
+      .hover-album{
         // size
         width: 40%;
 

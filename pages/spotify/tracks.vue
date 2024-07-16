@@ -84,53 +84,7 @@
   @import '@/assets/style.scss';
 
   .container-search{
-    @include displayContainerSpotify();
-    // size
-    min-height: 80%;
-    align-self: center;
-
-    // display
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-
-    .container-results{
-      //size
-      width: 50%;
-
-      // display
-      @include flex(column, center, flex-start, 3rem);
-
-      .input-search{
-        width: 50%;
-      }
-
-      .container-tracks{
-        // size
-        min-width: 50%;
-
-        // display
-        @include flex(column, flex-start, flex-start, 2rem);
-
-        ul{
-
-          // display
-          @include flex(column, flex-start, flex-start, 1rem);
-
-          // margin
-          margin: 0;
-          padding: 0;
-
-          // decoration
-          list-style: none;
-
-          li{
-            // decoration
-            cursor: pointer;
-          }
-        }
-      }
-    }
+    @include layoutSearchSpotify();
 
     .container-hover-track{
       //size
