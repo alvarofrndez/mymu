@@ -42,7 +42,7 @@
       <Spotify-Followedartists :followed_artists="followed_artists" />
     </template>
     <template v-else>
-      <p>Cargando...</p>
+      <LoaderCircle/>
     </template>
   </div>
 </template>
