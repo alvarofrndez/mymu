@@ -7,7 +7,18 @@ export default defineNuxtPlugin((nuxtApp) => {
     const clientSecret = config.public.spotifyClientSecret
     const redirectUri = config.public.spotifyRedirectUri
 
-    const auth_url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=user-read-private user-read-email user-follow-read playlist-read-private user-modify-playback-state user-read-playback-state user-read-currently-playing`
+    const scoped_permisions = `
+        user-read-private 
+        user-read-email 
+        user-follow-read 
+        playlist-read-private 
+        user-modify-playback-state 
+        user-read-playback-state 
+        user-read-currently-playing 
+        user-library-read
+    `
+
+    const auth_url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scoped_permisions}`
 
     let access_token = ''
 
@@ -105,6 +116,20 @@ export default defineNuxtPlugin((nuxtApp) => {
         return apiCall(`artists/${artist}`)
     }
 
+    const getTrack = async (track: any) => {
+        return apiCall(`tracks/${track}`)
+    }
+
+    const isTrackSaved = async (tracks: any) => {
+        let url_tracks = ''
+
+        tracks.map((track:any) => {
+            tracks.indexOf(track) == 0 ? url_tracks += track : url_tracks += ',' + track 
+        })
+
+        return apiCall(`me/tracks/contains?ids=${url_tracks}`)
+    }
+
     // EXPORTS
     nuxtApp.provide('spotifyAuthUrl', auth_url)
     nuxtApp.provide('getSpotifyToken', getToken)
@@ -122,4 +147,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     nuxtApp.provide('getFollowedArtists', getFollowedArtists)
     nuxtApp.provide('getArtist', getArtist)
+
+    nuxtApp.provide('getTrack', getTrack)
+    nuxtApp.provide('isTrackSaved', isTrackSaved)
 })

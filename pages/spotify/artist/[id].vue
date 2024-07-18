@@ -1,9 +1,10 @@
 <script setup>
-    import { useRoute } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { useNuxtApp } from '#app'
     import { onMounted, ref } from 'vue'
 
     const route = useRoute()
+    const router = useRouter()
 
     const { $getArtist, $spotifyApi, $spotifyApiFullUrl } = useNuxtApp()
     const artist = ref(null)
@@ -65,9 +66,20 @@
                 result.push(album)
         })
 
-        console.log(result)
-
         return result
+    }
+
+    function goTo(album){
+        switch(album.album_type){
+            case 'album':
+                router.push(`/spotify/album/${album.id}`)
+                break
+            case 'single':
+                router.push(`/spotify/track/${album.id}`)
+                break
+            case 'compilation':
+                router.push(`/spotify/playlist/${album.id}`)
+        }
     }
 </script>
 
@@ -91,7 +103,7 @@
             <ul v-for="album_type of albums_types" :key="album_type.type" :class="'contianer-' + album_type.type">
                 <h2>{{ album_type.title }}</h2>
                 <div>
-                    <li class='album' v-for="album of filterAlbum(artist.albums.items, album_type.type)" :key='album.id' >
+                    <li class='album' v-for="album of filterAlbum(artist.albums.items, album_type.type)" :key='album.id' @click="() => goTo(album)">
                         <div class='container-img' v-if="album.images && album.images[1]">
                             <img :src="album.images[1].url" :alt="album.name">
                         </div>

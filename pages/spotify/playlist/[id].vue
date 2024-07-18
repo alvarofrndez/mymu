@@ -1,9 +1,10 @@
 <script setup>
-    import { useRoute } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { useNuxtApp } from '#app'
     import { onMounted, ref } from 'vue'
 
     const route = useRoute()
+    const router = useRouter()
 
     const { $getPlaylist } = useNuxtApp()
     const playlist = ref(null)
@@ -98,6 +99,10 @@
         // console.log(new_tracks)
         // is_loading = false
     }
+
+    function goToTrack(track){
+        router.push(`/spotify/track/${track.id}`)
+    }
 </script>
 
 <template>
@@ -128,7 +133,7 @@
                     <b>duracion</b>
                     <b>play</b>
                 </div>
-                <li class='song' v-for="track of playlist.tracks.items" >
+                <li class='song' v-for="track of playlist.tracks.items" @click='() => goToTrack(track.track)'>
                     <div class='song-name' >
                         <b>{{ track.track.name }}</b>
                         <span class='gray'>{{ track.track.artists[0].name}}</span>

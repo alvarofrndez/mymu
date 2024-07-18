@@ -1,0 +1,115 @@
+<script setup>
+    import { defineProps, onMounted } from 'vue'
+
+    const { track } = defineProps({
+        track: {
+            type: Object,
+            required: true
+        }
+    })
+
+    function convertTime(duration){
+        let segundosTotales = Math.floor(duration / 1000);
+        let minutos = Math.floor((segundosTotales % 3600) / 60);
+        let segundos = segundosTotales % 3600 % 60;
+
+        if(minutos == 1)
+            return `${minutos} minuto, ${segundos} segundos`
+        else{
+            return `${minutos} minutos, ${segundos} segundos`
+        }
+    }
+
+    function convertDate(unconvert_date){
+        const date = new Date(unconvert_date)
+        
+        const year = date.getFullYear()
+        const month = (date.getMonth() + 1).toString().padStart(2, '0')
+        const day = date.getDate().toString().padStart(2, '0')
+
+        return `${day}-${month}-${year}`
+    }
+</script>
+
+<template>
+    <article class='track' v-if='track.name'>
+        <div class='container-img' v-if='track.album.images[0]'>
+            <img :src='track.album.images[0].url' :alt='track.name'>
+        </div>
+        <span v-else>
+            sin imagen
+        </span>
+        <div class='container-data'>
+            <div class='song-name' >
+                <b>{{ track.name }}</b>
+                <div>
+                    <span class='gray' v-for="artist of track.artists">
+                        {{ artist.name }}
+                        <span v-if="track.artists.indexOf(artist) < track.artists.length - 1"> · </span> 
+                    </span>
+                </div>
+            </div>
+            <span v-if='track.saved'>guardada</span>
+            <span v-else>sin guardar</span>
+            <span>{{ convertDate(track.album.release_date) }}</span>
+            <span >{{ convertTime(track.duration_ms) }}</span>
+            <audio controls>
+                <source :src="track.preview_url">
+                Tu navegador no soporta el audio
+            </audio>
+        </div>
+    </article>
+    <LoaderCircle v-else/>
+</template>
+
+<style scoped lang='scss'>
+    @import '@/assets/style.scss';
+
+    .track{
+        // size
+        width: fit-content;
+
+        // display
+        @include flex(row, flex-start, center, 1.5rem);
+
+        // margin
+        padding: 2rem;
+
+        // decoration
+        background-color: $h-c-white-opacity;
+        border-radius: 10px;
+
+        .container-img{
+            // size
+            width: 250px;
+            height: 250px;
+
+            // display
+            @include flex();
+
+            // decoration
+            overflow: hidden;
+            border-radius: 10px;
+
+            img{
+                // size
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .container-data{
+            // size
+            width: calc(100% - 250px - 1.5rem);
+
+            // display
+            @include flex(column, flex-start, center, 1rem);
+
+            .song-name{
+                // display
+                @include flex(column, flex-start, center, .5rem);
+            }
+        }
+    }
+
+</style>
