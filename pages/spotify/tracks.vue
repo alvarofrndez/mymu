@@ -8,7 +8,13 @@
   const { $searchSpotify } = useNuxtApp()
   const router = useRouter() 
   const hover_track = ref({})
-  
+
+  definePageMeta({
+    middleware: [
+    'auth'
+    ]
+  })
+
   const search = async () => {
     results.value = []
     if (query.value) {
@@ -134,6 +140,10 @@
 
             // decoration
             color: $h-c-black-gray;
+          }
+
+          *{
+            word-break: break-all;
           }
         }
       }

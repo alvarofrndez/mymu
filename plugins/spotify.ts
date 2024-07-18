@@ -46,6 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         if (!response.ok) {
             const errorText = await response.text()
+            console.log(`https://api.spotify.com/v1/${endpoint}`)
             throw new Error(`Error al hacer peticion: ${errorText}`)
         }
 

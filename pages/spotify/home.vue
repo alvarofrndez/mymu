@@ -9,7 +9,7 @@
 
   definePageMeta({
     middleware: [
-      'auth'
+    'auth'
     ]
   })
 

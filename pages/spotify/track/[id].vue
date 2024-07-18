@@ -3,6 +3,12 @@
 
     const route = useRoute()
 
+    definePageMeta({
+        middleware: [
+        'auth'
+        ]
+    })
+
     onMounted(async () => {
         console.log(route.params.id)
         // playlist.value = await $getPlaylist(route.params.id)

@@ -1,32 +1,37 @@
 <script setup>
-    import { ref } from 'vue'
-    import { useRouter } from 'vue-router'
-    
-    const query = ref('')
-    const results = ref([])
-    
-    const { $searchSpotify } = useNuxtApp()
-    const router = useRouter() 
-    const hover_playlist = ref({})
-    
-    const search = async () => {
-      results.value = []
-      if (query.value) {
-        const result = await $searchSpotify(query.value, 'playlist')
-        results.value = result
-        console.log(results.value)
-      }else{
-        hover_playlist.value = {}
-      }
-    }
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  
+  const query = ref('')
+  const results = ref([])
+  
+  const { $searchSpotify } = useNuxtApp()
+  const router = useRouter() 
+  const hover_playlist = ref({})
 
-    function goTo(playlist) {
-      router.push(`/spotify/playlist/${playlist.id}`)
+  definePageMeta({
+    middleware: [
+    'auth'
+    ]
+  })
+  
+  const search = async () => {
+    results.value = []
+    if (query.value) {
+      const result = await $searchSpotify(query.value, 'playlist')
+      results.value = result
+    }else{
+      hover_playlist.value = {}
     }
+  }
 
-    function changeHoverPlaylist(playlist) {
-      hover_playlist.value = playlist
-    }
+  function goTo(playlist) {
+    router.push(`/spotify/playlist/${playlist.id}`)
+  }
+
+  function changeHoverPlaylist(playlist) {
+    hover_playlist.value = playlist
+  }
 </script>
 
 <template>
@@ -114,12 +119,8 @@
           // display
           @include flex(column, center, center, .5rem);
 
-          div{
-            // display
-            @include flex(row, center, center, .5rem);
-
-            // decoration
-            color: $h-c-black-gray;
+          *{
+            word-break: break-all;
           }
         }
       }

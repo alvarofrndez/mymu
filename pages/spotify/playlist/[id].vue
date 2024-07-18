@@ -11,6 +11,12 @@
     let is_loading = false
     const data_charged = ref(false)
 
+    definePageMeta({
+        middleware: [
+        'auth'
+        ]
+    })
+
     onMounted( () => {
         setInfiniteScroll()
         getPlaylist()
@@ -122,7 +128,7 @@
                     <b>duracion</b>
                     <b>play</b>
                 </div>
-                <li class='song' v-for="track of playlist.tracks.items" v-if="track">
+                <li class='song' v-for="track of playlist.tracks.items" >
                     <div class='song-name' >
                         <b>{{ track.track.name }}</b>
                         <span class='gray'>{{ track.track.artists[0].name}}</span>

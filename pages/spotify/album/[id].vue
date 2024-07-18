@@ -11,6 +11,12 @@
     let is_loading = false
     const data_charged = ref(false)
 
+    definePageMeta({
+        middleware: [
+        'auth'
+        ]
+    })
+
     onMounted(async () => {
         setInfiniteScroll()
 

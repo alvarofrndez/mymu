@@ -23,6 +23,12 @@
         }
     ]
 
+    definePageMeta({
+        middleware: [
+        'auth'
+        ]
+    })
+
     onMounted(async () => {
         artist.value = await $getArtist(route.params.id)
         await getArtistAlbums().then(() => {
