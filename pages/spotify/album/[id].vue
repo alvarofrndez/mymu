@@ -1,9 +1,10 @@
 <script setup>
-    import { useRoute } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { useNuxtApp } from '#app'
     import { onMounted, ref } from 'vue'
 
     const route = useRoute()
+    const router = useRouter()
 
     const { $getAlbum } = useNuxtApp()
     const album = ref(null)
@@ -21,7 +22,6 @@
         setInfiniteScroll()
 
         await $getAlbum(route.params.id).then((answer) => {
-            console.log(answer)
             album.value = answer
             data_charged.value = true
             getTotalTime()
@@ -90,6 +90,10 @@
         // console.log(new_tracks)
         // is_loading = false
     }
+
+    function goToTrack(track){
+        router.push(`/spotify/track/${track.id}`)
+    }
 </script>
 
 <template>
@@ -115,7 +119,7 @@
             </div>
         
             <ul class='contianer-songs'>
-                <li class='song' v-for="track of album.tracks.items">
+                <li class='song' v-for="track of album.tracks.items" @click='() => goToTrack(track)'>
                     <div class='song-name'>
                         <b>{{ track.name }}</b>
                         <span class='gray'>{{ track.artists[0].name}}</span>
@@ -228,6 +232,7 @@
 
                     // decoration
                     border-radius: 10px;
+                    cursor: pointer;
 
                     &>*{
                         // size

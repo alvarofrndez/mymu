@@ -17,7 +17,6 @@
         let last_index = 0
 
         const updateCarousel = () => {
-            console.log(last_index, currentIndex)
             playlists.style.transform = `translateX(-${currentIndex * 250}px)`;
         };
 

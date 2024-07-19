@@ -74,11 +74,11 @@
             case 'album':
                 router.push(`/spotify/album/${album.id}`)
                 break
-            case 'single':
-                router.push(`/spotify/track/${album.id}`)
-                break
-            case 'compilation':
-                router.push(`/spotify/playlist/${album.id}`)
+            // case 'single':
+            //     router.push(`/spotify/track/${album.id}`)
+            //     break
+            // case 'compilation':
+            //     router.push(`/spotify/playlist/${album.id}`)
         }
     }
 </script>

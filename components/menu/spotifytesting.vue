@@ -9,28 +9,18 @@
         menu_status.value = !menu_status.value
 
         if(menu_status.value){
-            let section = document.getElementsByClassName("section-container-close")[0]
             let menu = document.getElementsByClassName("menu-global-container-close")[0]
            
-            if (section && menu) {
-                section.classList.remove("section-container-close")
+            if (menu) {
                 menu.classList.remove("menu-global-container-close")
-
-                section.classList.add("section-container-open")
                 menu.classList.add("menu-global-container-open")
-            }else{
             }
         }else{
-            let section = document.getElementsByClassName("section-container-open")[0]
             let menu = document.getElementsByClassName("menu-global-container-open")[0]
 
-            if (section && menu) {
-                section.classList.remove("section-container-open")
+            if (menu) {
                 menu.classList.remove("menu-global-container-open")
-
-                section.classList.add("section-container-close")
-               menu.classList.add("menu-global-container-close")
-            }else{
+                menu.classList.add("menu-global-container-close")
             }
         }
     }
@@ -97,8 +87,9 @@
 
         // positon
         position: absolute;
-        top: 5%;
-        right: 10%;
+        bottom: 5%;
+        width: 16px;
+        left: calc(50% - 16px);
 
         // decoration
         cursor: pointer;
@@ -110,7 +101,7 @@
         height: 80%;
 
         // display
-        @include flex(column, flex-start, space-between, 1.5rem);
+        @include flex(row, flex-start, space-between, 1.5rem);
 
         .app-contianer{
             // display

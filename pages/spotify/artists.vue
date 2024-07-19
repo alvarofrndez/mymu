@@ -28,7 +28,6 @@
   }
 
   function changeHoverArtist(artist) {
-    console.log(artist)
     hover_artist.value = artist
   }
 </script>

@@ -27,7 +27,6 @@
         await $getPlaylist(route.params.id).then((answer) => {
             if(answer){
                 playlist.value = answer
-                console.log(playlist.value)
                 data_charged.value = true
                 getTotalTime()
             }else{

@@ -64,10 +64,6 @@
             z-index: 100;
 
             background-color: transparent;
-            
-            *{
-                color: $h-c-black;
-            }
         }
 
         .section-container-open, .section-container-close{
@@ -84,7 +80,7 @@
             // decoration
             border-top-left-radius: 20px;
             border-bottom-left-radius: 20px;
-            background-color: $h-c-white;
+            background-color: $h-c-black-opacity;
             overflow-y: scroll;
         }
 
