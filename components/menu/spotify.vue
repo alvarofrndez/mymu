@@ -12,7 +12,7 @@
 <template>
     <nav class='menu'>
         <ul>
-            <NuxtLink to='/spotify/home' :class="actual_route == 'home' ? 'active' : ''" @click="() => changeRoute('home')"> Home</NuxtLink>
+            <NuxtLink to='/spotify/home' :class="actual_route == 'home' ? 'active' : ''" @click="() => changeRoute('home')"> Inicio</NuxtLink>
             <NuxtLink to='/spotify/artists' :class="actual_route == 'artists' ? 'active' : ''" @click="() => changeRoute('artists')">Artistas</NuxtLink>
             <NuxtLink to='/spotify/playlists' :class="actual_route == 'playlists' ? 'active' : ''" @click="() => changeRoute('playlists')">Playlists</NuxtLink>
             <NuxtLink to='/spotify/tracks' :class="actual_route == 'tracks' ? 'active' : ''" @click="() => changeRoute('tracks')">Canciones</NuxtLink>
@@ -44,7 +44,7 @@
         padding-right: 1rem;
 
         // decoration
-        background-color: $h-c-black-opacity;
+        background-color: $h-c-black-light;
 
         ul{
             width: 95%;
@@ -70,13 +70,20 @@
 
                 // decoration
                 background-color: transparent;
-                border-top-left-radius: 5px;
-                border-top-right-radius: 5px;
+                border-radius: 5px;
                 cursor: pointer;
+
+                // transition
+                transition: background-color .2s ease-in;
+
+                &:hover{
+                    background-color: $h-c-black;
+                }
             }
 
             .active{
                 background-color: $h-c-black;
+                font-weight: bold;
             }
         }
 

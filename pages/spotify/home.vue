@@ -41,9 +41,7 @@
       <Spotify-playlists :playlists="playlists" />
       <Spotify-Followedartists :followed_artists="followed_artists" />
     </template>
-    <template v-else>
-      <LoaderCircle/>
-    </template>
+    <LoaderCircle v-else/>
   </div>
 </template>
   
@@ -55,9 +53,6 @@
 
     // display
     @include flex(column, center, flex-start, 6rem);
-
-    // decoration
-    // background-color: $h-c-white-opacity;
   }
 
 </style>

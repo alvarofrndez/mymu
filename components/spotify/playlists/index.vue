@@ -9,26 +9,30 @@
     })
 
     function startCarrousel(){
-        const playlists = document.getElementsByClassName('playlists')[0];
-        const items = document.querySelectorAll('.container-playlist');
-        const prevBtn = document.getElementsByClassName('prev')[0];
-        const nextBtn = document.getElementsByClassName('next')[0];
-        let currentIndex = 0;
+        const container_playlists = document.getElementsByClassName('container-carrousel')[0]
+        const playlists = document.getElementsByClassName('playlists')[0]
+        const items = document.querySelectorAll('.container-playlist')
+        const prevBtn = document.getElementsByClassName('prev')[0]
+        const nextBtn = document.getElementsByClassName('next')[0]
+        let currentIndex = 0
         let last_index = 0
+        const playlist_width = 250
+        let visibles_playlist = container_playlists.clientWidth / playlist_width
+
 
         const updateCarousel = () => {
-            playlists.style.transform = `translateX(-${currentIndex * 250}px)`;
+            playlists.style.transform = `translateX(-${currentIndex * playlist_width}px)`;
         };
 
         prevBtn.addEventListener('click', function() {
             last_index = currentIndex
-            currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - 4;
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - visibles_playlist + 1
             updateCarousel();
         });
 
         nextBtn.addEventListener('click', function() {
             last_index = currentIndex
-            currentIndex = (currentIndex < items.length - 4) ? currentIndex + 1 : 0;
+            currentIndex = (currentIndex < items.length - visibles_playlist) ? currentIndex + 1 : 0;
             updateCarousel();
         });
 
@@ -131,20 +135,24 @@
             // display
             @include flex(row, center, center, 5%);
 
-            margin: 1rem;
+            padding: 1rem;
 
             // decoration
             overflow-x: hidden;
 
             .carousel-btn {
-                width: 5%;
+                // position
                 position: absolute;
-                background-color: rgba(0, 0, 0, 0.5);
-                color: white;
-                border: none;
-                padding: 10px;
-                cursor: pointer;
                 z-index: 1;
+                
+                // margin
+                padding: 10px;
+                
+                // border
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+                font-size: $h-f-text-subtitle !important;
             }
 
             .prev {

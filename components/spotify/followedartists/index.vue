@@ -11,7 +11,7 @@
 
 <template>
     <section class='container-followed-artists'>
-        <h2>Mis Artistas</h2>
+        <h2>Artistas favoritos</h2>
         <ul class='followed-artists' v-if="followed_artists.artists.items[0]">
             <Spotify-followedartists-detail v-for="artist in followed_artists.artists.items" :key="artist.id" :followed_artist="artist"/>
         </ul>

@@ -15,11 +15,20 @@
         ]
     })
 
+    const totals_balls = [
+        1,
+        2,
+        3,
+        4,
+        5
+    ]
+
 </script>
 
 <template>
 
     <div :class="'global-container ' + type">
+        <BackgroundBall v-for="index of totals_balls" :data="{index: index, color: type}" v-if="type"/>
         <main>
             <Menu-spotify v-if="type == 'spotify'"/>
             <div class='top'></div>
@@ -47,7 +56,6 @@
         // display
         @include flex();
 
-
         main{
             // size
             width:80%;
@@ -58,6 +66,16 @@
             border-radius: 10px;
             box-shadow: 0px 0px 38px 0px $h-c-black;
             overflow-y: scroll;
+            animation: open-section 1s ease-in-out;
+
+            @keyframes open-section {
+                from{
+                    height: 0;
+                }
+                to{
+                    height:85%;
+                }
+            }
 
             &::-webkit-scrollbar {
                 width: 0px; 
@@ -87,7 +105,7 @@
             section{
                 // size
                 width: calc(100% - 4rem);
-                min-height: calc(95% - 2rem); 
+                min-height: calc(95% - 2rem);
 
                 // display
                 @include flex(row, flex-start, center);

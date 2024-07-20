@@ -44,6 +44,14 @@
         // decoration
         border-radius: 10px;
         cursor: pointer;
+        transform: scale(1);
+
+        // transition
+        transition: transform .3s ease;
+
+        &:hover{
+            transform: scale(1.1);
+        }
         
         .container-data{
             // size
@@ -61,11 +69,14 @@
             // decoration
             overflow: hidden;
             color: $h-c-white;
-            background: linear-gradient(to top, $h-c-black-opacity, rgba(0, 0, 0, 0));
+            background: linear-gradient(to top, $h-c-black-medium, rgba(0, 0, 0, 0));
             border-radius: 10px;
 
             *{
+                // size
                 width: 90%;
+
+                // decortion
                 overflow: hidden;
             }
         }
@@ -85,7 +96,7 @@
         }
 
         .gradient-overlay {
-            background: linear-gradient(to top, $h-c-black-opacity, transparent);
+            background: linear-gradient(to top, $h-c-black-medium, transparent);
             pointer-events: none;
         }
     }
