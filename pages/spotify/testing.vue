@@ -20,8 +20,8 @@
 <template>
 
     <div class='global-container'>
-        <Menu-spotifytesting class='menu-global-container-open' v-if="type == 'spotify'"/>
         <main>
+            <Menu-spotifytesting v-if="type == 'spotify'"/>
             <div class='top'></div>
             <section>
                 <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus, ex. Nisi sed id officiis molestiae provident, voluptates eaque reiciendis ducimus dolores omnis, aliquid veritatis delectus, quod repellat blanditiis laudantium repudiandae.
@@ -92,46 +92,13 @@
         // display
         @include flex();
 
+        // decoration
         background-color: #111;
 
-        .menu-global-container-open, .menu-global-container-close{
-            // size
-            width: 100%;
-            height: 15%;
-
-            // position
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 10000;
-
-            // display
-            @include flex(row, center, space-evenly);
-
-            // decoration
-            background-color: $h-c-black-opacity;
-
-            // transition
-            transition: height .5s;
-        }
-
-        .menu-global-container-close{
-            // size
-            height: 1%;
-            
-            // position
-            position: fixed;
-            top: 2%;
-            z-index: 100;
-
-            background-color: transparent;
-        }
-
         main{
-            position: absolute;
             // size
-            width:70%;
-            height:70%;
+            width:80%;
+            height:85%;
 
             // decoration
             background-color: #171717;
@@ -149,14 +116,14 @@
 
             div{
                 width: 100%;
-                height: 2rem;
+                height: 1rem;
                 background-color: #171717;
                 z-index: 100;
             }
 
             .top{
                 position: sticky;
-                top: 0;
+                top: 5%;
             }
 
             .bot{

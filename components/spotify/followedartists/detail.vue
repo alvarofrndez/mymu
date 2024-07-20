@@ -66,7 +66,7 @@
         }
 
         &:hover{
-            background-color: $h-c-white-opacity;
+            background-color: $h-c-black-opacity;
         }
     }
 

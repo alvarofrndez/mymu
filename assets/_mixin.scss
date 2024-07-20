@@ -68,22 +68,21 @@
 
 @mixin displayContainerSpotify(){
     // size
-    width: 95%;
-    min-height: 94%;
+    width: 100%;
+    min-height: 100%;
 
     // display
     @include flex(column);
 
     // margin
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
+    margin-top: 1rem;
 }
 
 @mixin layoutSearchSpotify(){
-        @include displayContainerSpotify();
+    @include displayContainerSpotify();
+    
     // size
-    min-height: 80%;
-    align-self: center;
+    align-self: flex-start;
 
     // display
     flex-direction: row;
@@ -91,40 +90,43 @@
     align-items: flex-start;
 
     .container-results{
-      //size
-      width: 50%;
-
-      // display
-      @include flex(column, center, flex-start, 3rem);
-
-      .input-search{
-        width: 50%;
-      }
-
-      .container-playlists, .container-albums, .container-artists, .container-tracks{
-        // size
+        //size
         width: 50%;
 
         // display
-        @include flex(column, flex-start, flex-start, 2rem);
+        @include flex(column, center, flex-start, 3rem);
 
-        ul{
-
-          // display
-          @include flex(column, flex-start, flex-start, 1rem);
-
-          // margin
-          margin: 0;
-          padding: 0;
-
-          // decoration
-          list-style: none;
-
-          li{
+        .input-search{
+            // size
+            width: 50%;
+            
             // decoration
-            cursor: pointer;
-          }
+            color: $h-c-black !important;
         }
+
+      .container-playlists, .container-albums, .container-artists, .container-tracks{
+            // size
+            width: 50%;
+
+            // display
+            @include flex(column, flex-start, flex-start, 2rem);
+
+            ul{
+                // display
+                @include flex(column, flex-start, flex-start, 1rem);
+
+                // margin
+                margin: 0;
+                padding: 0;
+
+                // decoration
+                list-style: none;
+
+                li{
+                    // decoration
+                    cursor: pointer;
+                }
+            }
       }
     }
 }

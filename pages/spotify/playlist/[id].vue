@@ -35,20 +35,7 @@
         })
     }
 
-    // 7kuC4E4B2epV88wK0no6Mj
     function setInfiniteScroll(){
-        container = document.getElementsByClassName('section-container-open')[0] ? document.getElementsByClassName('section-container-open')[0] : document.getElementsByClassName('section-container-close')[0]
-        
-        container.addEventListener('scroll', () => {
-            if ((container.scrollTop + container.clientHeight) >= container.scrollHeight - 100) {
-                if (is_loading)
-                    return
-                
-                is_loading = true
-
-                getMoreTracks()
-            }
-        });
     }
 
     function getTotalTime(){
@@ -125,12 +112,12 @@
         
             <ul class='contianer-songs'>
                 <div class='song-header'>
-                    <b>nombre</b>
-                    <b>añadida el</b>
-                    <b>añadida por</b>
-                    <b>album</b>
-                    <b>duracion</b>
-                    <b>play</b>
+                    <b>Nombre</b>
+                    <b>Añadida el</b>
+                    <b>Añadida por</b>
+                    <b>Album</b>
+                    <b>Duracion</b>
+                    <b>Play</b>
                 </div>
                 <li class='song' v-for="track of playlist.tracks.items" @click='() => goToTrack(track.track)'>
                     <div class='song-name' >
@@ -164,7 +151,7 @@
 
         .playlist{
             // size
-            width: 80%;
+            width: 90%;
 
             // display
             @include flex(column, flex-start, flex-start, 2rem);
@@ -200,19 +187,19 @@
 
             .contianer-songs{
                 // size
-                width: 100%;
+                width: calc(100% - 1rem);
 
                 // display
-                @include flex(column, space-around, space-around, 1.5rem);
+                @include flex(column, flex-start, space-around, 1.5rem);
 
                 // margin
                 margin: 0;
+                padding-left: .5rem;
                 padding-top: 2rem;
                 padding-bottom: 2rem;
 
                 // decoration
                 list-style: none;
-                background-color: $h-c-white-opacity;
                 border-radius: 15px;
 
                 .song-header{
@@ -220,14 +207,14 @@
                     width: calc(100% - 2rem);
 
                     // display
-                    @include flex(row, center, flex-start);
+                    @include flex(row, center, space-between, 1.5rem);
 
                     // margin
                     padding: .5rem;
 
                     *{
                         // size
-                        width: calc(100% / 6);
+                        width: calc(100% / 6  - 1.5rem);
 
                         // decoration
                         font-size: $h-f-text-medium !important;
@@ -239,18 +226,23 @@
                     width: calc(100% - 2rem);
 
                     // display
-                    @include flex(row, center, flex-start, 1.5rem);
+                    @include flex(row, center, space-between, 1.5rem);
 
                     // margin
                     padding: .5rem;
 
                     // decoration
                     border-radius: 10px;
+                    cursor: pointer;
 
                     &>*{
                         // size
                         width: calc(100% / 6 - 1.5rem);
                         overflow: hidden;
+                    }
+
+                    &:hover{
+                        background-color: $h-c-black-opacity;
                     }
 
                     .song-name{
@@ -260,10 +252,6 @@
 
                     .gray{
                         color: $h-c-black-gray;
-                    }
-
-                    &:hover{
-                        background-color: $h-c-white;
                     }
                 }
             }

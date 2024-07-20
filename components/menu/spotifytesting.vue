@@ -1,135 +1,54 @@
 <script setup>
-    import { useUserStore } from '~/stores/user'
-
-    const user_s = useUserStore()
-
-    let menu_status = ref(true)
-
-    function changeStatusMenu() {
-        menu_status.value = !menu_status.value
-
-        if(menu_status.value){
-            let menu = document.getElementsByClassName("menu-global-container-close")[0]
-           
-            if (menu) {
-                menu.classList.remove("menu-global-container-close")
-                menu.classList.add("menu-global-container-open")
-            }
-        }else{
-            let menu = document.getElementsByClassName("menu-global-container-open")[0]
-
-            if (menu) {
-                menu.classList.remove("menu-global-container-open")
-                menu.classList.add("menu-global-container-close")
-            }
-        }
-    }
-
 </script>
 
 <template>
-    <div>
-        <div class='icon-menu-container' @click="changeStatusMenu">
-            <Icon name="fluent-mdl2:numbered-list-text-mirrored" v-if="!menu_status"/>
-            <Icon name="fluent-mdl2:cancel" v-if="menu_status"/>
-        </div>
-        <nav class='menu-container' v-if="menu_status">
-            <div class='app-contianer' title='spotify'>
-                <NuxtLink  to='/spotify/home' v-if='user_s.user'>
-                    <Icon class='icon' name="grommet-icons:spotify" />
-                </NuxtLink>
-                <NuxtLink  to='/spotify/home' v-if='user_s.user'>
-                    <h2>Spotify</h2>
-                </NuxtLink>
-            </div>
-            <section>
-                <h3>Artistas</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/artists' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Playlists</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Canciones</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/tracks' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Albums</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/albums' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Usuario</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/profile' v-if='user_s.user'>Perfil</NuxtLink>
-                </div>
-            </section>
-        </nav>
-    </div>
+    <nav class='menu'>
+        <NuxtLink to='/spotify/home' > Home</NuxtLink>
+        <NuxtLink to='/spotify/artists' >Artistas</NuxtLink>
+        <NuxtLink to='/spotify/playlists' >Playlists</NuxtLink>
+        <NuxtLink to='/spotify/tracks' >Canciones</NuxtLink>
+        <NuxtLink to='/spotify/albums' >Albums</NuxtLink>
+        <NuxtLink to='/spotify/profile' >Perfil</NuxtLink>
+    </nav>
 </template>
 
 <style scoped lang='scss'>
     @import '@/assets/style.scss';
 
-    *{
-        color: $h-c-white;
-    }
-
-    .icon-menu-container{
-
-        // positon
-        position: absolute;
-        bottom: 5%;
-        width: 16px;
-        left: calc(50% - 16px);
-
-        // decoration
-        cursor: pointer;
-    }
-
-    .menu-container{
+    .menu{
         // size
-        width: 80%;
-        height: 80%;
+        width: 100%;
+        height: 5%;
+
+        // position
+        position: sticky;
+        top: 0;
+        z-index: 100;
 
         // display
-        @include flex(row, flex-start, space-between, 1.5rem);
+        @include flex(row, flex-end, flex-start, .3rem);
 
-        .app-contianer{
+        // margin
+        padding-left: 2rem;
+        padding-right: 2rem;
+
+        // decoration
+        list-style: none;
+        background-color: #171717;
+        cursor: pointer;
+
+        a{
+            // size
+            width: calc(50% / 6);
+            height: 80%;
+
             // display
-            @include flex(row, center, flex-start, .5rem);
+            @include flex();
 
-            *{
-                color: $h-c-spotify-primary;
-            }
-        }
-
-        section{
-
-            h3{
-                // margin
-                margin-left: .5rem !important;
-
-                // decoration
-                font-weight: normal;
-            }
-
-            .categories{
-                // display
-                @include flex(column, flex-start, center, 1rem);
-
-                // margin
-                margin-left: 1.5rem !important;
-                margin-top: 1.5rem !important;
-            }
+            // decoration
+            background-color: #000;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
         }
     }
 

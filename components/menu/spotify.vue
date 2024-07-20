@@ -1,145 +1,88 @@
 <script setup>
-    import { useUserStore } from '~/stores/user'
+    import { ref } from 'vue'
 
-    const user_s = useUserStore()
+    const actual_route = ref(undefined)
 
-    let menu_status = ref(true)
-
-    function changeStatusMenu() {
-        menu_status.value = !menu_status.value
-
-        if(menu_status.value){
-            let section = document.getElementsByClassName("section-container-close")[0]
-            let menu = document.getElementsByClassName("menu-global-container-close")[0]
-           
-            if (section && menu) {
-                section.classList.remove("section-container-close")
-                menu.classList.remove("menu-global-container-close")
-
-                section.classList.add("section-container-open")
-                menu.classList.add("menu-global-container-open")
-            }else{
-            }
-        }else{
-            let section = document.getElementsByClassName("section-container-open")[0]
-            let menu = document.getElementsByClassName("menu-global-container-open")[0]
-
-            if (section && menu) {
-                section.classList.remove("section-container-open")
-                menu.classList.remove("menu-global-container-open")
-
-                section.classList.add("section-container-close")
-               menu.classList.add("menu-global-container-close")
-            }else{
-            }
-        }
+    function changeRoute(route){
+        actual_route.value = route
     }
 
 </script>
 
 <template>
-    <div>
-        <div class='icon-menu-container' @click="changeStatusMenu">
-            <Icon name="fluent-mdl2:numbered-list-text-mirrored" v-if="!menu_status"/>
-            <Icon name="fluent-mdl2:cancel" v-if="menu_status"/>
-        </div>
-        <nav class='menu-container' v-if="menu_status">
-            <div class='app-contianer' title='spotify'>
-                <NuxtLink  to='/spotify/home' v-if='user_s.user'>
-                    <Icon class='icon' name="grommet-icons:spotify" />
-                </NuxtLink>
-                <NuxtLink  to='/spotify/home' v-if='user_s.user'>
-                    <h2>Spotify</h2>
-                </NuxtLink>
-            </div>
-            <section>
-                <h3>Artistas</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/artists' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Playlists</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/playlists' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Canciones</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/tracks' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Albums</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/albums' v-if='user_s.user'>buscar</NuxtLink>
-                </div>
-            </section>
-            <section>
-                <h3>Usuario</h3>
-                <div class='categories'>
-                    <NuxtLink to='/spotify/profile' v-if='user_s.user'>Perfil</NuxtLink>
-                </div>
-            </section>
-        </nav>
-    </div>
+    <nav class='menu'>
+        <ul>
+            <NuxtLink to='/spotify/home' :class="actual_route == 'home' ? 'active' : ''" @click="() => changeRoute('home')"> Home</NuxtLink>
+            <NuxtLink to='/spotify/artists' :class="actual_route == 'artists' ? 'active' : ''" @click="() => changeRoute('artists')">Artistas</NuxtLink>
+            <NuxtLink to='/spotify/playlists' :class="actual_route == 'playlists' ? 'active' : ''" @click="() => changeRoute('playlists')">Playlists</NuxtLink>
+            <NuxtLink to='/spotify/tracks' :class="actual_route == 'tracks' ? 'active' : ''" @click="() => changeRoute('tracks')">Canciones</NuxtLink>
+            <NuxtLink to='/spotify/albums' :class="actual_route == 'albums' ? 'active' : ''" @click="() => changeRoute('albums')">Albums</NuxtLink>
+            <NuxtLink to='/spotify/profile' :class="actual_route == 'profile' ? 'active' : ''" @click="() => changeRoute('profile')">Perfil</NuxtLink>
+        </ul>
+        <Icon class='icon' name="fluent-mdl2:cancel" />
+    </nav>
 </template>
 
 <style scoped lang='scss'>
     @import '@/assets/style.scss';
 
-    *{
-        color: $h-c-white;
-    }
-
-    .icon-menu-container{
-
-        // positon
-        position: absolute;
-        top: 5%;
-        right: 10%;
-
-        // decoration
-        cursor: pointer;
-    }
-
-    .menu-container{
+    .menu{
         // size
-        width: 80%;
-        height: 80%;
+        width: calc(100% - 2rem);
+        height: 5%;
+
+        // position
+        position: sticky;
+        top: 0;
+        z-index: 100;
 
         // display
-        @include flex(column, flex-start, space-between, 1.5rem);
+        @include flex(row, center, space-between);
 
-        .app-contianer{
+        // margin
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        // decoration
+        background-color: $h-c-black-opacity;
+
+        ul{
+            width: 95%;
+            height: 100%;
+
             // display
-            @include flex(row, center, flex-start, .5rem);
+            @include flex(row, flex-end, flex-start, .3rem);
 
-            *{
-                color: $h-c-spotify-primary;
-            }
-        }
+            // margin
+            margin: 0;
+            padding: 0;
 
-        section{
+            // decoration
+            list-style: none;
 
-            h3{
-                // margin
-                margin-left: .5rem !important;
+            a{
+                // size
+                width: calc(50% / 6);
+                height: 75%;
+
+                // display
+                @include flex();
 
                 // decoration
-                font-weight: normal;
+                background-color: transparent;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                cursor: pointer;
             }
 
-            .categories{
-                // display
-                @include flex(column, flex-start, center, 1rem);
-
-                // margin
-                margin-left: 1.5rem !important;
-                margin-top: 1.5rem !important;
+            .active{
+                background-color: $h-c-black;
             }
         }
-    }
 
+
+        .icon{
+            cursor: pointer;
+        }
+    }
 </style>

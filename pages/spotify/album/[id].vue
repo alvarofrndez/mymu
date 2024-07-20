@@ -29,18 +29,7 @@
     })
 
     function setInfiniteScroll(){
-        container = document.getElementsByClassName('section-container-open')[0] ? document.getElementsByClassName('section-container-open')[0] : document.getElementsByClassName('section-container-close')[0]
-        
-        container.addEventListener('scroll', () => {
-            if ((container.scrollTop + container.clientHeight) >= container.scrollHeight - 100) {
-                if (is_loading)
-                    return
-                
-                is_loading = true
 
-                getMoreTracks()
-            }
-        });
     }
 
     function getTotalTime(){
@@ -72,23 +61,6 @@
                 return `${minutos} minutos, ${segundos} segundos`
             }
         }
-    }
-
-    function convertDate(unconvert_date){
-        const date = new Date(unconvert_date)
-
-        const year = date.getFullYear()
-        const month = (date.getMonth() + 1).toString().padStart(2, '0')
-        const day = date.getDate().toString().padStart(2, '0')
-
-        return `${day}-${month}-${year}`
-    }
-    
-    async function getMoreTracks(){
-        const { $spotifyApi } = useNuxtApp()
-        // let new_tracks = await $spotifyApi(playlist.value.tracks.next)
-        // console.log(new_tracks)
-        // is_loading = false
     }
 
     function goToTrack(track){
@@ -150,7 +122,7 @@
 
         .album{
             // size
-            width: 80%;
+            width: 90%;
 
             // display
             @include flex(column, flex-start, flex-start, 2rem);
@@ -193,12 +165,12 @@
 
                 // margin
                 margin: 0;
+                padding-left: 0;
                 padding-top: 2rem;
                 padding-bottom: 2rem;
 
                 // decoration
                 list-style: none;
-                background-color: $h-c-white-opacity;
                 border-radius: 15px;
 
                 .song-header{
@@ -249,7 +221,7 @@
                     }
 
                     &:hover{
-                        background-color: $h-c-white;
+                        background-color: $h-c-black-opacity;
                     }
                 }
             }

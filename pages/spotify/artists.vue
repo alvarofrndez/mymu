@@ -20,6 +20,8 @@
     if (query.value) {
       const result = await $searchSpotify(query.value, 'artist')
       results.value = result
+    }else{
+      results.value = {}
     }
   }
 
@@ -100,7 +102,7 @@
         padding: 2rem;
 
         // decoration
-        background-color: $h-c-white-opacity;
+        background-color: $h-c-black-opacity;
         border-radius: 15px;
         cursor: pointer;
 

@@ -34,10 +34,14 @@
 
 <style scoped lang='scss'>
     @import '@/assets/style.scss';
-
     
     .container-track{
         @include displayContainerSpotify();
+
+        align-self: center;
+
+        // size
+        height: 100%;
 
         .container{
             // size

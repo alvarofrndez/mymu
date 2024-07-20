@@ -9,104 +9,99 @@
         type.value = route.path.split('/')[1]
     })
 
+    definePageMeta({
+        layout: [
+        'main'
+        ]
+    })
+
 </script>
 
 <template>
-    <main class='container'>
-        <Menu-spotify class='menu-global-container-open' v-if="type == 'spotify'"/>
-        <section class='section-container-open'>
-            <slot></slot>
-        </section>
-    </main>
+
+    <div :class="'global-container ' + type">
+        <main>
+            <Menu-spotify v-if="type == 'spotify'"/>
+            <div class='top'></div>
+            <section>
+                <slot></slot>
+            </section>
+            <div class='bot'></div>
+        </main>
+    </div>
+
 </template>
 
 <style scoped lang='scss'>
     @import '@/assets/style.scss';
 
-    .container{
+
+    .global-container{
         // size
         width: 100%;
         height: 100%;
 
+        // position
+        position: relative;
+
         // display
-        @include flex(row, center, flex-start);
+        @include flex();
 
-        // decoration
-        background-color: $h-c-black-opacity;
 
-        .menu-global-container-open, .menu-global-container-close{
+        main{
             // size
-            width: 15%;
-            height: 100%;
-
-            // position
-            position: fixed;
-
-            // display
-            @include flex(column, center, space-evenly);
+            width:80%;
+            height:85%;
 
             // decoration
-            background-color: $h-c-black-opacity;
-
-            // transition
-            transition: width .5s;
-        }
-
-        .menu-global-container-close{
-            // size
-            width: 1%;
-            height: 1%;
-            
-            // position
-            position: fixed;
-            top: 1%;
-            left: 1%;
-            z-index: 100;
-
-            background-color: transparent;
-        }
-
-        .section-container-open, .section-container-close{
-            // size
-            width: 85%;
-            height: 100%;
-
-            // position
-            z-index: 10;
-
-            // display
-            @include flex(row, flex-start, center);
-
-            // decoration
-            border-top-left-radius: 20px;
-            border-bottom-left-radius: 20px;
-            background-color: $h-c-black-opacity;
+            background-color: #171717ca;
+            border-radius: 10px;
+            box-shadow: 0px 0px 38px 0px $h-c-black;
             overflow-y: scroll;
-        }
 
-        .section-container-open{
-            animation: changewidhtopen .5s;
-            margin-left: 15%;
-
-            @keyframes changewidhtopen {
-                0%{
-                    width: 100%;
-                }
-                70%{
-                    width: 90%;
-                }
-                100%{
-                    width: 85%;
-                }
+            &::-webkit-scrollbar {
+                width: 0px; 
             }
-        }
 
-        .section-container-close{
-            // size
-            width: 100%;
+            *{
+                color: $h-c-white !important;
+            }
 
-            border-radius: 0;
+            div{
+                width: 100%;
+                height: 1rem;
+                background-color: transparent;
+                z-index: 100;
+            }
+
+            .top{
+                position: sticky;
+                top: 5%;
+            }
+
+            .bot{
+                position: sticky;
+                bottom: 0;
+            }
+
+            section{
+                // size
+                width: calc(100% - 4rem);
+                min-height: calc(95% - 2rem); 
+
+                // display
+                @include flex(row, flex-start, center);
+
+                // decoration
+                overflow: hidden;
+                transform: translateX(2rem);
+            }
         }
     }
 
+    .spotify{
+        // decoration
+        background: $h-c-spotify-primary-07;
+        background: linear-gradient(0deg, $h-c-spotify-primary-07 0%, $h-c-spotify-primary 50%);
+    }
 </style>

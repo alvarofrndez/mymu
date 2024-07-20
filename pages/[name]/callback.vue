@@ -21,8 +21,8 @@
         const code = route.query.code
         if (code) {
             await $getSpotifyToken(code)
-            // router.push('/spotify/profile')
-            router.push('/spotify/testing')
+            router.push('/spotify/profile')
+            // router.push('/spotify/testing')
         }
     }
 </script>

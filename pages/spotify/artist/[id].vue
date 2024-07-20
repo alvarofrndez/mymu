@@ -138,7 +138,7 @@
 
         .artist{
             // size
-            width: 80%;
+            width: 90%;
 
             // display
             @include flex(column, flex-start, flex-start, 2rem);
@@ -185,7 +185,6 @@
 
                 // decoration
                 list-style: none;
-                background-color: $h-c-white-opacity;
                 border-radius: 15px;
 
                 &>div{
@@ -231,7 +230,7 @@
                         }
 
                         &:hover{
-                            background-color: $h-c-white;
+                            background-color: $h-c-black-opacity;
                         }
                     }
                 }

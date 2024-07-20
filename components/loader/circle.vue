@@ -14,7 +14,7 @@
     .container-circle{
         // size
         width: 100%;
-        min-height: 94vh;
+        min-height: 80vh;
 
         // display
         @include flex();
@@ -24,6 +24,8 @@
 
         // decoration
         background-color: transparent;
+        transform: translateY(-1rem);
+
         .circle{
             // size
             width: 30px;

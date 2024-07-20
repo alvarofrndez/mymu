@@ -76,7 +76,7 @@
         padding: 2rem;
 
         // decoration
-        background-color: $h-c-white-opacity;
+        background-color: $h-c-black-opacity;
         border-radius: 10px;
 
         .container-img{
