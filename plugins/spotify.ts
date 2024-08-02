@@ -8,14 +8,18 @@ export default defineNuxtPlugin((nuxtApp) => {
     const redirectUri = config.public.spotifyRedirectUri
 
     const scoped_permisions = `
-        user-read-private 
-        user-read-email 
         user-follow-read 
-        playlist-read-private 
+        user-follow-modify
         user-modify-playback-state 
         user-read-playback-state 
         user-read-currently-playing 
+        user-read-private 
+        user-read-email 
         user-library-read
+        user-library-modify
+        playlist-read-private
+        playlist-modify-public
+        playlist-modify-private
     `
 
     const auth_url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${scoped_permisions}`
@@ -60,7 +64,12 @@ export default defineNuxtPlugin((nuxtApp) => {
             throw new Error(`Error al hacer peticion: ${errorText}`)
         }
 
-        return response.json()
+        try{
+            const data = await response.json()
+            return data
+        }catch(err){
+            return true
+        }
     }
 
     const apiCallFullUrl = async (endpoint: string, options = {}) => {
@@ -77,7 +86,12 @@ export default defineNuxtPlugin((nuxtApp) => {
             throw new Error(`Error al hacer peticion: ${errorText}`)
         }
 
-        return response.json()
+        try{
+            const data = await response.json()
+            return data
+        }catch(err){
+            return true
+        }
     }
 
     const searchSpotify = async (query: string, type: string) => {
@@ -97,6 +111,24 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     const getPlaylist = async (playlist: any) => {
         return apiCall(`playlists/${playlist}`)
+    }
+
+    const isPlaylistSaved = async (id: any) => {
+        return apiCall(`playlists/${id}/followers/contains`)
+    }
+
+    const savePlaylist = async (id: any) => {
+        const options = {
+            method: 'PUT'
+        }
+        return apiCall(`playlists/${id}/followers`, options)
+    }
+
+    const unsavePlaylist = async (id: any) => {
+        const options = {
+            method: 'DELETE'
+        }
+        return apiCall(`playlists/${id}/followers`, options)
     }
 
     const getUserAlbums = async () => {
@@ -119,14 +151,52 @@ export default defineNuxtPlugin((nuxtApp) => {
         return apiCall(`tracks/${track}`)
     }
 
-    const isTrackSaved = async (tracks: any) => {
-        let url_tracks = ''
+    const isArtistOrUserSaved = async (object: any, type: any) => {
+        let url_object = ''
 
-        tracks.map((track:any) => {
-            tracks.indexOf(track) == 0 ? url_tracks += track : url_tracks += ',' + track 
+        object.map((track:any) => {
+            object.indexOf(track) == 0 ? url_object += track : url_object += ',' + track 
         })
 
-        return apiCall(`me/tracks/contains?ids=${url_tracks}`)
+        return apiCall(`me/following/contains?type=${type}&ids=${url_object}`)
+    }
+
+    const saveArtistOrUser = async (id: any, type: any) => {
+        const options = {
+            method: 'PUT'
+        }
+        return apiCall(`me/following?type=${type}&ids=${id}`, options)
+    }
+
+    const unsaveArtistOrUser = async (id: any, type: any) => {
+        const options = {
+            method: 'DELETE'
+        }
+        return apiCall(`me/following?type=${type}&ids=${id}`, options)
+    }
+
+    const isSaved = async (object: any, type: any) => {
+        let url_object = ''
+
+        object.map((track:any) => {
+            object.indexOf(track) == 0 ? url_object += track : url_object += ',' + track 
+        })
+
+        return apiCall(`me/${type}/contains?ids=${url_object}`)
+    }
+
+    const save = async (id: any, type: any) => {
+        const options = {
+            method: 'PUT'
+        }
+        return apiCall(`me/${type}?ids=${id}`, options)
+    }
+
+    const unsave = async (id: any, type: any) => {
+        const options = {
+            method: 'DELETE'
+        }
+        return apiCall(`me/${type}?ids=${id}`, options)
     }
 
     // EXPORTS
@@ -140,6 +210,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     nuxtApp.provide('getUserPlaylists', getUserPlaylists)
     nuxtApp.provide('getPlaylist', getPlaylist)
+    nuxtApp.provide('isPlaylistSaved', isPlaylistSaved)
+    nuxtApp.provide('savePlaylist', savePlaylist)
+    nuxtApp.provide('unsavePlaylist', unsavePlaylist)
 
     nuxtApp.provide('getUserAlbums', getUserAlbums)
     nuxtApp.provide('getAlbum', getAlbum)
@@ -148,5 +221,12 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.provide('getArtist', getArtist)
 
     nuxtApp.provide('getTrack', getTrack)
-    nuxtApp.provide('isTrackSaved', isTrackSaved)
+
+    nuxtApp.provide('isArtistOrUserSaved', isArtistOrUserSaved)
+    nuxtApp.provide('saveArtistOrUser', saveArtistOrUser)
+    nuxtApp.provide('unsaveArtistOrUser', unsaveArtistOrUser)
+
+    nuxtApp.provide('isSaved', isSaved)
+    nuxtApp.provide('save', save)
+    nuxtApp.provide('unsave', unsave)
 })

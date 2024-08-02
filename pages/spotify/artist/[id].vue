@@ -6,7 +6,7 @@
     const route = useRoute()
     const router = useRouter()
 
-    const { $getArtist, $spotifyApi, $spotifyApiFullUrl } = useNuxtApp()
+    const { $getArtist, $spotifyApi, $spotifyApiFullUrl, $isArtistOrUserSaved, $saveArtistOrUser, $unsaveArtistOrUser } = useNuxtApp()
     const artist = ref(null)
     const data_charged = ref(false)
     const albums_types = [
@@ -32,8 +32,11 @@
 
     onMounted(async () => {
         artist.value = await $getArtist(route.params.id)
-        await getArtistAlbums().then(() => {
-            data_charged.value = true
+        await getArtistAlbums().then(async () => {
+            await $isArtistOrUserSaved([route.params.id], 'artist').then((answer_saved) => {
+                artist.value.saved = answer_saved[0]
+                data_charged.value = true
+            })
         })
     })
 
@@ -69,6 +72,20 @@
         return result
     }
 
+    async function saveArtist(id) {
+        const response = await $saveArtistOrUser(id, 'artist')
+        
+        if(response)
+            artist.value.saved = true
+    }
+    
+    async function unsaveArtist(id) {
+        const response = await $unsaveArtistOrUser(id, 'artist')
+
+        if(response)
+            artist.value.saved = false
+    }
+
     function goTo(album){
         switch(album.album_type){
             case 'album':
@@ -94,6 +111,8 @@
                 <div class='data'>
                     <h1>{{ artist.name }}</h1>
                     <p>{{ artist.followers.total }} seguidores</p>
+                    <Icon v-if='artist.saved' @click='unsaveArtist(artist.id)' class='icon' name="material-symbols:favorite" />
+                    <Icon v-else @click='saveArtist(artist.id)' class='icon' name="material-symbols:favorite-outline" />
                     <div>
                         <p v-for='genre of artist.genres' :key='genre'>{{ genre }}</p>
                     </div>
@@ -169,6 +188,11 @@
                 .data{
                     // display
                     @include flex(column, flex-start, flex-start, 1rem);
+
+                    .icon{
+                        // decoration
+                        cursor: pointer;
+                    }
                 }
             }
 

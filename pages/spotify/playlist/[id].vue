@@ -6,10 +6,8 @@
     const route = useRoute()
     const router = useRouter()
 
-    const { $getPlaylist } = useNuxtApp()
+    const { $getPlaylist, $isPlaylistSaved, $savePlaylist, $unsavePlaylist } = useNuxtApp()
     const playlist = ref(null)
-    let container = null
-    let is_loading = false
     const data_charged = ref(false)
 
     definePageMeta({
@@ -24,11 +22,14 @@
     })
     
     async function getPlaylist(){
-        await $getPlaylist(route.params.id).then((answer) => {
+        await $getPlaylist(route.params.id).then(async (answer) => {
             if(answer){
-                playlist.value = answer
-                data_charged.value = true
-                getTotalTime()
+                await $isPlaylistSaved(route.params.id).then((answer_saved) => {
+                    playlist.value = answer
+                    data_charged.value = true
+                    playlist.value.saved = answer_saved[0]
+                    getTotalTime()
+                })
             }else{
                 getPlaylist()
             }
@@ -86,6 +87,20 @@
         // is_loading = false
     }
 
+    async function savePlaylist(id) {
+        const response = await $savePlaylist(id)
+        
+        if(response)
+            playlist.value.saved = true
+    }
+    
+    async function unsavePlaylist(id) {
+        const response = await $unsavePlaylist(id)
+
+        if(response)
+            playlist.value.saved = false
+    }
+
     function goToTrack(track){
         router.push(`/spotify/track/${track.id}`)
     }
@@ -103,6 +118,8 @@
                     <h1>{{ playlist.name }}</h1>
                     <p>Creada por {{ playlist.owner.display_name }}</p>
                     <p>{{ playlist.followers.total }} seguidores</p>
+                    <Icon v-if='playlist.saved' @click='unsavePlaylist(playlist.id)' class='icon' name="material-symbols:favorite" />
+                    <Icon v-else @click='savePlaylist(playlist.id)' class='icon' name="material-symbols:favorite-outline" />
                     <p v-if='playlist.public'>pública</p>
                     <p v-else>privada</p>
                     <p>{{ playlist.tracks.total }} canciones</p>
@@ -182,6 +199,11 @@
                 .data{
                     // display
                     @include flex(column, flex-start, flex-start, 1rem);
+
+                    .icon{
+                        // decoration
+                        cursor: pointer;
+                    }
                 }
             }
 

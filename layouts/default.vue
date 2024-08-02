@@ -28,7 +28,7 @@
 <template>
 
     <div :class="'global-container ' + type">
-        <BackgroundBall v-for="index of totals_balls" :data="{index: index, color: type}" v-if="type"/>
+        <!-- <BackgroundBall v-for="index of totals_balls" :data="{index: index, color: type}" v-if="type"/> -->
         <main>
             <Menu-spotify v-if="type == 'spotify'"/>
             <div class='top'></div>

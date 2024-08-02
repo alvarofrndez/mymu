@@ -5,7 +5,8 @@
 
     const route = useRoute()
     const track = ref({})
-    const { $getTrack, $isTrackSaved } = useNuxtApp()
+    const can_load = ref(false)
+    const { $getTrack, $isSaved } = useNuxtApp()
 
     definePageMeta({
         middleware: [
@@ -15,9 +16,10 @@
 
     onMounted(async () => {
         await $getTrack(route.params.id).then(async (answer) => {
-            await $isTrackSaved([route.params.id]).then((answer_saved) => {
+            await $isSaved([route.params.id], 'tracks').then((answer_saved) => {
                 track.value = answer
                 track.value.saved = answer_saved[0]
+                can_load.value = true
             })
         })
     })
@@ -25,11 +27,12 @@
 </script>
 
 <template>
-    <section class='container-track'>
+    <section class='container-track' v-if='can_load'>
         <div class='container'>
             <SpotifyTracksCard :track='track'/>
         </div>
     </section>
+    <LoaderCircle v-else/>
 </template>
 
 <style scoped lang='scss'>

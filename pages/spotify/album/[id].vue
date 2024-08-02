@@ -6,10 +6,8 @@
     const route = useRoute()
     const router = useRouter()
 
-    const { $getAlbum } = useNuxtApp()
+    const { $getAlbum, $isSaved, $save, $unsave } = useNuxtApp()
     const album = ref(null)
-    let container = null
-    let is_loading = false
     const data_charged = ref(false)
 
     definePageMeta({
@@ -21,10 +19,14 @@
     onMounted(async () => {
         setInfiniteScroll()
 
-        await $getAlbum(route.params.id).then((answer) => {
-            album.value = answer
-            data_charged.value = true
-            getTotalTime()
+        await $getAlbum(route.params.id).then(async (answer) => {
+            await $isSaved([route.params.id], 'albums').then((answer_saved) => {
+                album.value = answer
+                album.value.saved = answer_saved[0]
+                data_charged.value = true
+                getTotalTime()
+            })
+
         })
     })
 
@@ -63,6 +65,20 @@
         }
     }
 
+    async function saveAlbum(id) {
+        const response = await $save(id, 'albums')
+        
+        if(response)
+            album.value.saved = true
+    }
+    
+    async function unsaveAlbum(id) {
+        const response = await $unsave(id, 'albums')
+
+        if(response)
+            album.value.saved = false
+    }
+
     function goToTrack(track){
         router.push(`/spotify/track/${track.id}`)
     }
@@ -81,6 +97,8 @@
                     <!-- <p>{{ album.followers.total }} seguidores</p> -->
                     <!-- <p v-if='album.public'>pública</p> -->
                     <!-- <p v-else>privada</p> -->
+                    <Icon v-if='album.saved' @click='unsaveAlbum(album.id)' class='icon' name="material-symbols:favorite" />
+                    <Icon v-else @click='saveAlbum(album.id)' class='icon' name="material-symbols:favorite-outline" />
                     <div>
                         <span v-for="artist of album.artists">{{ artist.name }}</span>
                     </div>
@@ -153,6 +171,11 @@
                 .data{
                     // display
                     @include flex(column, flex-start, flex-start, 1rem);
+
+                    .icon{
+                        // decoration
+                        cursor: pointer;
+                    }
                 }
             }
 

@@ -1,5 +1,5 @@
 <script setup>
-    import { defineProps, onMounted } from 'vue'
+    import { defineProps } from 'vue'
 
     const { track } = defineProps({
         track: {
@@ -7,6 +7,7 @@
             required: true
         }
     })
+    const { $save, $unsave } = useNuxtApp()
 
     function convertTime(duration){
         let segundosTotales = Math.floor(duration / 1000);
@@ -29,6 +30,21 @@
 
         return `${day}-${month}-${year}`
     }
+
+    async function saveTrack(id) {
+        const response = await $save(id, 'tracks')
+        
+        if(response)
+            track.saved = true
+    }
+    
+    async function unsaveTrack(id) {
+        const response = await $unsave(id, 'tracks')
+
+        if(response)
+            track.saved = false
+    }
+
 </script>
 
 <template>
@@ -49,9 +65,9 @@
                     </span>
                 </div>
             </div>
-            <span v-if='track.saved'>guardada</span>
-            <span v-else>sin guardar</span>
-            <span>{{ convertDate(track.album.release_date) }}</span>
+            <Icon v-if='track.saved' @click='unsaveTrack(track.id)' class='icon' name="material-symbols:favorite" />
+            <Icon v-else @click='saveTrack(track.id)' class='icon' name="material-symbols:favorite-outline" />
+            <span >{{ convertDate(track.album.release_date) }}</span>
             <span >{{ convertTime(track.duration_ms) }}</span>
             <audio controls>
                 <source :src="track.preview_url">
@@ -108,6 +124,11 @@
             .song-name{
                 // display
                 @include flex(column, flex-start, center, .5rem);
+            }
+
+            .icon{
+                // decoration
+                cursor: pointer;
             }
         }
     }
