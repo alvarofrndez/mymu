@@ -125,11 +125,6 @@
                 // display
                 @include flex(column, flex-start, center, .5rem);
             }
-
-            .icon{
-                // decoration
-                cursor: pointer;
-            }
         }
     }
 

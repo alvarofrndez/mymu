@@ -2,9 +2,11 @@
     import { useRoute, useRouter } from 'vue-router'
     import { useNuxtApp } from '#app'
     import { onMounted, ref } from 'vue'
+    import { useFloatModalStore } from '@/stores/float-modal'
 
     const route = useRoute()
     const router = useRouter()
+    const float_modal_s = useFloatModalStore()
 
     const { $getPlaylist, $isPlaylistSaved, $savePlaylist, $unsavePlaylist } = useNuxtApp()
     const playlist = ref(null)
@@ -139,7 +141,7 @@
                 <li class='song' v-for="track of playlist.tracks.items" @click='() => goToTrack(track.track)'>
                     <div class='song-name' >
                         <b>{{ track.track.name }}</b>
-                        <span class='gray'>{{ track.track.artists[0].name}}</span>
+                        <span class='gray' @mouseover='(e) => float_modal_s.show(e, track.track.artists[0])' @mouseleave='float_modal_s.hide()'>{{ track.track.artists[0].name}}</span>
                     </div>
                     <span>{{ convertDate(track.added_at) }}</span>
                     <span>{{ track.added_by.id ? track.added_by.id : 'spotify'}}</span>
@@ -199,11 +201,6 @@
                 .data{
                     // display
                     @include flex(column, flex-start, flex-start, 1rem);
-
-                    .icon{
-                        // decoration
-                        cursor: pointer;
-                    }
                 }
             }
 

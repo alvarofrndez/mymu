@@ -188,11 +188,6 @@
                 .data{
                     // display
                     @include flex(column, flex-start, flex-start, 1rem);
-
-                    .icon{
-                        // decoration
-                        cursor: pointer;
-                    }
                 }
             }
 

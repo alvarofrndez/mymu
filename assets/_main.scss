@@ -18,6 +18,11 @@ body{
             font-family: $h-f-montserrat;
         }
 
+        .icon{
+            // decoration
+            cursor: pointer;
+        }
+
         h1, h2, h3, h4, p{
             // margin
             margin: 0;

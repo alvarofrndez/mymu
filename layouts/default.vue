@@ -37,6 +37,7 @@
             </section>
             <div class='bot'></div>
         </main>
+        <Modal-float/>
     </div>
 
 </template>
@@ -62,7 +63,7 @@
             height:85%;
 
             // decoration
-            background-color: #171717ca;
+            background-color: $h-c-black-opacity-light;
             border-radius: 10px;
             box-shadow: 0px 0px 38px 0px $h-c-black;
             overflow-y: scroll;
