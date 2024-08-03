@@ -103,8 +103,10 @@
             playlist.value.saved = false
     }
 
-    function goToTrack(track){
-        router.push(`/spotify/track/${track.id}`)
+    function goTo(e, url) {
+        float_modal_s.hide()
+        e.stopPropagation()
+        router.push(url)
     }
 </script>
 
@@ -138,14 +140,26 @@
                     <b>Duracion</b>
                     <b>Play</b>
                 </div>
-                <li class='song' v-for="track of playlist.tracks.items" @click='() => goToTrack(track.track)'>
+                <li class='song' v-for="track of playlist.tracks.items" @click='(e) => goTo(e, `/spotify/track/${track.track.id}`)'>
                     <div class='song-name' >
                         <b>{{ track.track.name }}</b>
-                        <span class='gray' @mouseover='(e) => float_modal_s.show(e, track.track.artists[0])' @mouseleave='float_modal_s.hide()'>{{ track.track.artists[0].name}}</span>
+                        <span 
+                            class='gray' 
+                            @mouseover='(e) => float_modal_s.show(e, track.track.artists[0])' 
+                            @mouseleave='float_modal_s.hide()'
+                            @click='(e) => goTo(e, `/spotify/artist/${track.track.artists[0].id}`)'>
+                            {{ track.track.artists[0].name}}
+                        </span>
                     </div>
                     <span>{{ convertDate(track.added_at) }}</span>
                     <span>{{ track.added_by.id ? track.added_by.id : 'spotify'}}</span>
-                    <span v-if="track.track.album.album_type == 'album'">{{ track.track.album.name}}</span>
+                    <span 
+                        v-if="track.track.album.album_type == 'album'"
+                        @mouseover='(e) => float_modal_s.show(e, track.track.album)' 
+                        @mouseleave='float_modal_s.hide()'
+                        @click='(e) => goTo(e, `/spotify/album/${track.track.album.id}`)'>
+                        {{ track.track.album.name}}
+                    </span>
                     <i v-else class='gray'>sin album</i>
                     <span >{{ convertTime('song', track.track.duration_ms) }}</span>
                     <audio controls>

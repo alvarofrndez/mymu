@@ -2,9 +2,11 @@
     import { useRoute, useRouter } from 'vue-router'
     import { useNuxtApp } from '#app'
     import { onMounted, ref } from 'vue'
+    import { useFloatModalStore } from '@/stores/float-modal'
 
     const route = useRoute()
     const router = useRouter()
+    const float_modal_s = useFloatModalStore()
 
     const { $getAlbum, $isSaved, $save, $unsave } = useNuxtApp()
     const album = ref(null)
@@ -25,8 +27,8 @@
                 album.value.saved = answer_saved[0]
                 data_charged.value = true
                 getTotalTime()
+                console.log(album.value)
             })
-
         })
     })
 
@@ -79,8 +81,10 @@
             album.value.saved = false
     }
 
-    function goToTrack(track){
-        router.push(`/spotify/track/${track.id}`)
+    function goTo(e, url) {
+        float_modal_s.hide()
+        e.stopPropagation()
+        router.push(url)
     }
 </script>
 
@@ -94,9 +98,6 @@
 
                 <div class='data'>
                     <h1>{{ album.name }}</h1>
-                    <!-- <p>{{ album.followers.total }} seguidores</p> -->
-                    <!-- <p v-if='album.public'>pública</p> -->
-                    <!-- <p v-else>privada</p> -->
                     <Icon v-if='album.saved' @click='unsaveAlbum(album.id)' class='icon' name="material-symbols:favorite" />
                     <Icon v-else @click='saveAlbum(album.id)' class='icon' name="material-symbols:favorite-outline" />
                     <div>
@@ -109,19 +110,21 @@
             </div>
         
             <ul class='contianer-songs'>
-                <li class='song' v-for="track of album.tracks.items" @click='() => goToTrack(track)'>
+                <li class='song' v-for="track of album.tracks.items" @click='(e) => goTo(e, `/spotify/track/${track.id}`)'>
                     <div class='song-name'>
                         <b>{{ track.name }}</b>
-                        <span class='gray'>{{ track.artists[0].name}}</span>
+                        <span class='gray'
+                            @mouseover='(e) => float_modal_s.show(e, track.artists[0])' 
+                            @mouseleave='float_modal_s.hide()'
+                            @click='(e) => goTo(e, `/spotify/artist/${track.artists[0].id}`)'>
+                            {{ track.artists[0].name}}
+                        </span>
                     </div>
-                    <!-- <span>{{ track.added_by.id}}</span>
-                    <span v-if="track.album.album_type == 'album'">{{ track.album.name}}</span>
-                    <i v-else class='gray'>sin album</i>
                     <span >{{ convertTime('song', track.duration_ms) }}</span>
                     <audio controls>
                         <source :src="track.preview_url">
                         Tu navegador no soporta el audio
-                    </audio> -->
+                    </audio>
                 </li>
             </ul>
         </article>
@@ -226,7 +229,7 @@
 
                     &>*{
                         // size
-                        width: calc(100% / 6);
+                        width: calc(100% / 3);
                     }
 
                     .song-name{

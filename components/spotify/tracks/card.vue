@@ -1,5 +1,10 @@
 <script setup>
     import { defineProps } from 'vue'
+    import { useRouter } from 'vue-router'
+    import { useFloatModalStore } from '@/stores/float-modal'
+
+    const router = useRouter()
+    const float_modal_s = useFloatModalStore()
 
     const { track } = defineProps({
         track: {
@@ -45,6 +50,12 @@
             track.saved = false
     }
 
+    function goTo(e, url) {
+        float_modal_s.hide()
+        e.stopPropagation()
+        router.push(url)
+    }
+
 </script>
 
 <template>
@@ -56,11 +67,16 @@
             sin imagen
         </span>
         <div class='container-data'>
-            <div class='song-name' >
+            <div class='song-header' >
                 <b>{{ track.name }}</b>
                 <div>
-                    <span class='gray' v-for="artist of track.artists">
-                        {{ artist.name }}
+                    <span class='container-artists' v-for="artist of track.artists">
+                        <span
+                            @mouseover='(e) => float_modal_s.show(e, artist)' 
+                            @mouseleave='float_modal_s.hide()'
+                            @click='(e) => goTo(e, `/spotify/artist/${artist.id}`)'>
+                            {{ artist.name }}
+                        </span>
                         <span v-if="track.artists.indexOf(artist) < track.artists.length - 1"> · </span> 
                     </span>
                 </div>
@@ -68,6 +84,14 @@
             <Icon v-if='track.saved' @click='unsaveTrack(track.id)' class='icon' name="material-symbols:favorite" />
             <Icon v-else @click='saveTrack(track.id)' class='icon' name="material-symbols:favorite-outline" />
             <span >{{ convertDate(track.album.release_date) }}</span>
+            <span 
+                v-if="track.album.album_type == 'album'"
+                class='album'
+                @mouseover='(e) => float_modal_s.show(e, track.album)' 
+                @mouseleave='float_modal_s.hide()'
+                @click='(e) => goTo(e, `/spotify/album/${track.album.id}`)'>
+                {{ track.album.name }}
+            </span>
             <span >{{ convertTime(track.duration_ms) }}</span>
             <audio controls>
                 <source :src="track.preview_url">
@@ -121,9 +145,23 @@
             // display
             @include flex(column, flex-start, center, 1rem);
 
-            .song-name{
+            .song-header{
                 // display
                 @include flex(column, flex-start, center, .5rem);
+
+                div{
+                    .container-artists{
+                        *{
+                            // decoration
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+
+            .album{
+                // decoration
+                cursor: pointer;
             }
         }
     }

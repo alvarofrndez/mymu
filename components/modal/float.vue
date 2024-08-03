@@ -6,18 +6,36 @@
 </script>
 
 <template>
-    <div v-if='float_modal_s.can_show && float_modal_s.is_visible' class='modal' :style='float_modal_s.modal_styles'>
-        <slot></slot>
+    <div v-if='float_modal_s.can_show && float_modal_s.is_visible' :class="'modal ' + float_modal_s.data_charged" :style='float_modal_s.modal_styles'>
+        <component :is='float_modal_s.modal_component' :data='float_modal_s.modal_props'></component>
     </div>
 </template>
 
 <style scoped lang='scss'>
+    @import '@/assets/style.scss';
+
     .modal {
-        width: 200px;
-        height: 200px;
-        background: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        // size
+        width: fit-content;
+        height: fit-content;
+
+        // position
+        position: absolute;
+
+        // margin
+        padding: 15px;
+
+        // decoration
+        background: $h-c-black-medium-opacity;
+        border-radius: 15px;
+
+    }
+
+    .visible{
+        visibility: visible;
+    }
+
+    .hidden{
+        visibility: hidden;
     }
 </style>
