@@ -4,6 +4,8 @@
 
     const actual_route = ref(undefined)
     const float_modal_s = useFloatModalStore()
+    const emit = defineEmits(['resizeWidth'])
+    const max = ref(false)
 
     function changeRoute(route){
         actual_route.value = route
@@ -11,6 +13,11 @@
     
     function changeFloatModal(){
         float_modal_s.can_show = !float_modal_s.can_show
+    }
+
+    function resizeWidth(){
+        max.value = !max.value
+        emit('resizeWidth')
     }
 
 </script>
@@ -30,7 +37,7 @@
             <Icon v-if='float_modal_s.can_show' @click='changeFloatModal' class='icon' name="material-symbols:toggle-on" />
             <Icon v-else @click='changeFloatModal' class='icon' name="material-symbols:toggle-off-outline" />
         </div>
-        <Icon class='icon' name="fluent-mdl2:cancel" />
+        <Icon @click='resizeWidth' class='icon' :name="max ? 'gg:compress-right' : 'gg:expand'" />
     </nav>
 </template>
 

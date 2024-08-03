@@ -22,6 +22,12 @@
         4,
         5
     ]
+    const max = ref(false)
+
+    function resizeWidth() {
+        console.log(max.value)
+        max.value = !max.value
+    }
 
 </script>
 
@@ -29,8 +35,8 @@
 
     <div :class="'global-container ' + type">
         <!-- <BackgroundBall v-for="index of totals_balls" :data="{index: index, color: type}" v-if="type"/> -->
-        <main>
-            <Menu-spotify v-if="type == 'spotify'"/>
+        <main :class="max ? 'max' : 'min'">
+            <Menu-spotify v-if="type == 'spotify'" @resizeWidth="resizeWidth"/>
             <div class='top'></div>
             <section>
                 <slot></slot>
@@ -58,14 +64,8 @@
         @include flex();
 
         main{
-            // size
-            width:80%;
-            height:85%;
-
             // decoration
             background-color: $h-c-black-opacity-light;
-            border-radius: 10px;
-            box-shadow: 0px 0px 38px 0px $h-c-black;
             overflow-y: scroll;
             animation: open-section 1s ease-in-out;
 
@@ -114,6 +114,54 @@
                 // decoration
                 overflow: hidden;
                 transform: translateX(2rem);
+            }
+        }
+
+        .max{
+            // size
+            width: 100%;
+            height: 100%;
+
+            // decoration
+            border-radius: 0;
+            box-shadow: none;
+
+            // animation
+            animation: resize-width-max 1s ease-in-out;
+
+            @keyframes resize-width-max {
+                from{
+                    width: 80%;
+                    height:85%;
+                }
+                to{
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        .min{
+            // size
+            width: 80%;
+            height: 85%;
+
+            // decoration
+            border-radius: 10px;
+            box-shadow: 0px 0px 38px 0px $h-c-black;
+
+            // animation
+            animation: resize-width-min 1s ease-in-out;
+
+            @keyframes resize-width-min {
+                from{
+                    width: 100%;
+                    height: 100%;
+                }
+                to{
+                    width: 80%;
+                    height:85%;
+                }
             }
         }
     }
