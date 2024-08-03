@@ -87,6 +87,7 @@
     }
 
     function goTo(album){
+        console.log(album)
         switch(album.album_type){
             case 'album':
                 router.push(`/spotify/album/${album.id}`)

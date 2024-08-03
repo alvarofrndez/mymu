@@ -7,7 +7,6 @@
   
   const { $searchSpotify } = useNuxtApp()
   const router = useRouter() 
-  const hover_playlist = ref({})
 
   definePageMeta({
     middleware: [
@@ -20,17 +19,11 @@
     if (query.value) {
       const result = await $searchSpotify(query.value, 'playlist')
       results.value = result
-    }else{
-      hover_playlist.value = {}
     }
   }
 
   function goTo(playlist) {
     router.push(`/spotify/playlist/${playlist.id}`)
-  }
-
-  function changeHoverPlaylist(playlist) {
-    hover_playlist.value = playlist
   }
 </script>
 
@@ -41,31 +34,25 @@
         
         <article class='container-playlists' v-if="results.playlists">
           <ul>
-            <li v-for="playlist in results.playlists.items" :key="playlist.id" @click="() => goTo(playlist)" @mouseenter="() => changeHoverPlaylist(playlist)">{{ playlist.name }}</li>
+            <li v-for="playlist in results.playlists.items" class='container-playlist' :key="playlist.id" @click="() => goTo(playlist)">
+              <article class='playlist' @click="() => goTo(playlist)">
+                <div class='container-img' v-if="playlist.images">
+                  <img :src='playlist.images[0].url' :alt='playlist.name'>
+                </div>
+                
+                <div class='container-data'>
+                  <b>{{ playlist.name }}</b>
+                  <span>Creado por: {{ playlist.owner.display_name }}</span>
+                </div>
+
+                <span>{{ playlist.tracks.total }} canciones</span>
+              </article>  
+            </li>
           </ul>
         </article>
 
         <article v-else>
           <i>Escribe una playlist para obtener resultados</i>
-        </article>
-      </div>
-      
-      <div class='container-hover-playlist'>
-        <article class='hover-playlist' v-if="hover_playlist.name" @click="() => goTo(hover_playlist)">
-          <div class='container-img' v-if="hover_playlist.images">
-            <img :src='hover_playlist.images[0].url' :alt='hover_playlist.name'>
-          </div>
-          
-          <div class='container-data'>
-            <b>{{ hover_playlist.name }}</b>
-            <span>Creado por: {{ hover_playlist.owner.display_name }}</span>
-          </div>
-
-          <span>{{ hover_playlist.tracks.total }} canciones</span>
-        </article>
-
-        <article v-else>
-          <i>Posicionate encima de una cancón para ver sus datos</i>
         </article>
       </div>
     </section>
@@ -77,23 +64,23 @@
   .container-search{
     @include layoutSearchSpotify();
 
-    .container-hover-playlist{
+    .container-playlist{
       //size
-      width: 50%;
+      width: 30%;
 
       // display
       @include flex(column, center, flex-start);
       align-self: center;
 
-      .hover-playlist{
+      .playlist{
         // size
-        width: 40%;
+        width: 100%;
 
         // display
         @include flex(column, center, flex-start, 1rem);
 
         // margin
-        padding: 2rem;
+        padding: 1rem;
 
         // decoration
         background-color: $h-c-black-opacity;

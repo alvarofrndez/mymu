@@ -7,7 +7,6 @@
   
   const { $searchSpotify } = useNuxtApp()
   const router = useRouter()
-  const hover_artist = ref({})
 
   definePageMeta({
     middleware: [
@@ -20,17 +19,12 @@
     if (query.value) {
       const result = await $searchSpotify(query.value, 'artist')
       results.value = result
-    }else{
-      results.value = {}
     }
   }
 
-  function goTo(artist) {
-    router.push(`/spotify/artist/${artist.id}` )
-  }
-
-  function changeHoverArtist(artist) {
-    hover_artist.value = artist
+  function goTo(e, url) {
+    e.stopPropagation()
+    router.push(url)
   }
 </script>
 
@@ -42,36 +36,30 @@
       
       <article class='container-artists' v-if="results.artists">
         <ul>
-          <li v-for="artist in results.artists.items" :key="artist.id" @click="() => goTo(artist)" @mouseenter="() => changeHoverArtist(artist)">{{ artist.name }}</li>
+          <li v-for="artist in results.artists.items" class='container-artist' :key="artist.id" @click='(e) => goTo(e, `/spotify/artist/${artist.id}`)'>
+            <article class='artist' @click="() => goTo(artist)">
+              <div class='container-img' v-if="artist.images">
+                <img :src='artist.images[0].url' :alt='artist.name'>
+              </div>
+              
+              <div class='container-data'>
+                <b>{{ artist.name }}</b>
+                <span>{{ artist.followers.total }} seguidores</span>
+              </div>
+
+              <div>
+                <span v-for="genre of artist.genres" :key="genre">
+                  {{ genre }}
+                  <span v-if="artist.genres.indexOf(genre) < artist.genres.length - 1"> · </span> 
+                </span>
+              </div>
+            </article>
+          </li>
         </ul>
       </article>
 
       <article v-else>
         <i>Escribe un artista para obtener resultados</i>
-      </article>
-    </div>
-    
-    <div class='container-hover-artist'>
-      <article class='hover-artist' v-if="hover_artist.name" @click="() => goTo(hover_artist)">
-        <div class='container-img' v-if="hover_artist.images">
-          <img :src='hover_artist.images[0].url' :alt='hover_artist.name'>
-        </div>
-        
-        <div class='container-data'>
-          <b>{{ hover_artist.name }}</b>
-          <span>{{ hover_artist.followers.total }} seguidores</span>
-        </div>
-
-        <div class='container-artists'>
-          <span v-for="genre of hover_artist.genres" :key="genre">
-            {{ genre }}
-            <span v-if="hover_artist.genres.indexOf(genre) < hover_artist.genres.length - 1"> · </span> 
-          </span>
-        </div>
-      </article>
-
-      <article v-else>
-        <i>Posicionate encima de un artista para ver sus datos</i>
       </article>
     </div>
   </section>
@@ -83,23 +71,23 @@
   .container-search{
     @include layoutSearchSpotify();
 
-    .container-hover-artist{
+    .container-artist{
       //size
-      width: 50%;
+      width: 30%;
 
       // display
       @include flex(column, center, flex-start);
       align-self: center;
 
-      .hover-artist{
+      .artist{
         // size
-        width: 40%;
+        width: 100%;
 
         // display
         @include flex(column, center, flex-start, 1rem);
 
         // margin
-        padding: 2rem;
+        padding: 1rem;
 
         // decoration
         background-color: $h-c-black-opacity;

@@ -1,13 +1,14 @@
 <script setup>
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useFloatModalStore } from '@/stores/float-modal'
   
   const query = ref('')
   const results = ref([])
   
   const { $searchSpotify } = useNuxtApp()
   const router = useRouter() 
-  const hover_album = ref({})
+  const float_modal_s = useFloatModalStore()
 
   definePageMeta({
     middleware: [
@@ -21,16 +22,14 @@
       const result = await $searchSpotify(query.value, 'album')
       results.value = result
     }else{
-      hover_album.value = {}
+      album.value = {}
     }
   }
 
-  function goTo(album) {
-    router.push(`/spotify/album/${album.id}`)
-  }
-
-  function changeHoverAlbum(album) {
-    hover_album.value = album
+  function goTo(e, url) {
+    float_modal_s.hide()
+    e.stopPropagation()
+    router.push(url)
   }
 </script>
 
@@ -41,7 +40,30 @@
       
       <article class='container-albums' v-if="results.albums">
         <ul>
-          <li v-for="album in results.albums.items" :key="album.id" @click="() => goTo(album)" @mouseenter="() => changeHoverAlbum(album)">{{ album.name }}</li>
+          <li v-for="album in results.albums.items" class='container-album' :key="album.id" @click="(e) => goTo(e, `/spotify/album/${album.id}`)">
+            <article class='album' v-if="album.name" @click="() => goTo(album)">
+              <div class='container-img' v-if="album.images">
+                <img :src='album.images[0].url' :alt='album.name'>
+              </div>
+              
+              <div class='container-data'>
+                <b>{{ album.name }}</b>
+                <span>{{ album.release_date }}</span>
+              </div>
+
+              <div>
+                <span v-for="artist of album.artists" :key="artist.name">
+                  <span 
+                    @mouseover='(e) => float_modal_s.show(e, artist)' 
+                    @mouseleave='float_modal_s.hide()'
+                    @click='(e) => goTo(e, `/spotify/artist/${artist.id}`)'>
+                    {{ artist.name }}
+                  </span>
+                  <span v-if="album.artists.indexOf(artist) < album.artists.length - 1"> · </span> 
+                </span>
+              </div>
+            </article>
+          </li>
         </ul>
       </article>
 
@@ -50,28 +72,8 @@
       </article>
     </div>
     
-    <div class='container-hover-album'>
-      <article class='hover-album' v-if="hover_album.name" @click="() => goTo(hover_album)">
-        <div class='container-img' v-if="hover_album.images">
-          <img :src='hover_album.images[0].url' :alt='hover_album.name'>
-        </div>
-        
-        <div class='container-data'>
-          <b>{{ hover_album.name }}</b>
-          <span>{{ hover_album.release_date }}</span>
-        </div>
-
-        <div class='container-artists'>
-          <span v-for="artist of hover_album.artists" :key="artist.name">
-            {{ artist.name }}
-            <span v-if="hover_album.artists.indexOf(artist) < hover_album.artists.length - 1"> · </span> 
-          </span>
-        </div>
-      </article>
-
-      <article v-else>
-        <i>Posicionate encima de un album para ver sus datos</i>
-      </article>
+    <div >
+      
     </div>
   </section>
 </template>
@@ -82,23 +84,23 @@
   .container-search{
     @include layoutSearchSpotify();
 
-    .container-hover-album{
+    .container-album{
       //size
-      width: 50%;
+      width: 30%;
 
       // display
       @include flex(column, center, flex-start);
       align-self: center;
 
-      .hover-album{
+      .album{
         // size
-        width: 40%;
+        width: 100%;
 
         // display
         @include flex(column, center, flex-start, 1rem);
 
         // margin
-        padding: 2rem;
+        padding: 1rem;
 
         // decoration
         background-color: $h-c-black-opacity;

@@ -80,25 +80,20 @@
 
 @mixin layoutSearchSpotify(){
     @include displayContainerSpotify();
-    
-    // size
-    align-self: flex-start;
 
     // display
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
+    @include flex(row, flex-start, flex-start);
 
     .container-results{
         //size
-        width: 50%;
+        width: 100%;
 
         // display
         @include flex(column, center, flex-start, 3rem);
 
         .input-search{
             // size
-            width: 50%;
+            width: 30%;
             
             // decoration
             color: $h-c-black !important;
@@ -106,14 +101,14 @@
 
       .container-playlists, .container-albums, .container-artists, .container-tracks{
             // size
-            width: 50%;
+            width: 80%;
 
             // display
-            @include flex(column, flex-start, flex-start, 2rem);
+            @include flex(row, flex-start, flex-start, 2rem);
 
             ul{
                 // display
-                @include flex(column, flex-start, flex-start, 1rem);
+                @include flex(row, flex-start, space-around, 2rem, wrap);
 
                 // margin
                 margin: 0;
