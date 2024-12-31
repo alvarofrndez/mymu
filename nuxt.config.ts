@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: ['@pinia/nuxt', "@nuxt/icon"],
   pinia: {
     storesDirs: ['./stores/**', './custom-folder/stores/**'],
@@ -19,4 +19,14 @@ export default defineNuxtConfig({
       spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET
     },
   },
+  app: {
+    head: {
+      title: 'mymu',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Lleva un registro total de tu uso de spotify' }
+      ]
+    }
+  }
 })

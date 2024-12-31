@@ -27,7 +27,6 @@
                 album.value.saved = answer_saved[0]
                 data_charged.value = true
                 getTotalTime()
-                console.log(album.value)
             })
         })
     })

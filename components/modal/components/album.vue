@@ -14,7 +14,6 @@
                 album.value = answer
                 album.value.saved = answer_saved[0]
                 float_modal_s.data_charged = 'visible'
-                console.log(album.value)
             })
         })
     })

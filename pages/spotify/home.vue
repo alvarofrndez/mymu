@@ -21,6 +21,7 @@
   async function getPlaylists() {
     try {
       playlists.value = (await $getUserPlaylists())
+      playlists.value.items = playlists.value.items.filter(playlist => playlist !== null) 
     } catch (error) {
       console.error('Error al obtener las playlists', error)
     }

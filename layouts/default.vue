@@ -14,18 +14,9 @@
         'main'
         ]
     })
-
-    const totals_balls = [
-        1,
-        2,
-        3,
-        4,
-        5
-    ]
     const max = ref(false)
 
     function resizeWidth() {
-        console.log(max.value)
         max.value = !max.value
     }
 
@@ -34,7 +25,6 @@
 <template>
 
     <div :class="'global-container ' + type">
-        <!-- <BackgroundBall v-for="index of totals_balls" :data="{index: index, color: type}" v-if="type"/> -->
         <main :class="max ? 'max' : 'min'">
             <Menu-spotify v-if="type == 'spotify'" @resizeWidth="resizeWidth"/>
             <div class='top'></div>

@@ -1,4 +1,5 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
+import { useRouter } from 'vue-router'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const config = useRuntimeConfig()
@@ -61,6 +62,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         if (!response.ok) {
             const errorText = await response.text()
+            if(response.status == 401 || response.status == 400){
+                window.location.replace('/')
+            }
             throw new Error(`Error al hacer peticion: ${errorText}`)
         }
 
@@ -83,6 +87,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         if (!response.ok) {
             const errorText = await response.text()
+            if(response.status == 401 || response.status == 400){
+                window.location.replace('/')
+            }
             throw new Error(`Error al hacer peticion: ${errorText}`)
         }
 

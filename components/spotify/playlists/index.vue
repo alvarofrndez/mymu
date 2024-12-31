@@ -39,65 +39,9 @@
         updateCarousel();
     }
 
-    // function startCarrousel(){
-    //     const playlists = document.getElementsByClassName('playlists')[0];
-    //     const items = document.querySelectorAll('.container-playlist');
-    //     const prevBtn = document.getElementsByClassName('prev')[0];
-    //     const nextBtn = document.getElementsByClassName('next')[0];
-    //     let currentIndex = 0;
-    //     let last_index = 0
-    //     let actual_scroll = 0
-    //     let previnterval = null
-    //     let nextinterval = null
-    //     let left_limit = items.length * 250 *-1
-    //     let right_limit = items.length * 250
-
-    //     const updateCarousel = () => {
-    //         console.log(actual_scroll)
-    //         // playlists.style.transform = `translateX(-${currentIndex * 250}px)`;
-    //         playlists.style.transform = `translateX(${actual_scroll}px)`;
-    //     };
-
-    //     prevBtn.addEventListener('mouseover', function() {
-    //         previnterval = setInterval(() => {
-    //             last_index = currentIndex
-    //             currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - 1;
-    //             actual_scroll -= 5
-    //             updateCarousel();
-    //         }, 10)
-    //         if(left_limit < actual_scroll){
-    //             actual_scroll -= 5
-    //         }else{
-    //             actual_scroll = right_limit
-    //         }
-    //     });
-
-    //     prevBtn.addEventListener('mouseout', function() {
-    //         clearInterval(previnterval);
-    //     });
-
-    //     nextBtn.addEventListener('mouseover', function() {
-    //         nextinterval = setInterval(() => {
-    //             last_index = currentIndex
-    //             currentIndex = (currentIndex < items.length - 1) ? currentIndex + 1 : 0;
-    //             if(right_limit > actual_scroll){
-    //                 actual_scroll += 5
-    //             }else{
-    //                 actual_scroll = 0
-    //             }
-    //             updateCarousel();
-    //         }, 10)
-    //     });
-
-    //     nextBtn.addEventListener('mouseout', function() {
-    //         clearInterval(nextinterval);
-    //     });
-
-    //     updateCarousel();
-    // }
-
     onMounted(() => {
-        startCarrousel()
+        if(playlists.items[0])
+            startCarrousel()
     })
 </script>
 
